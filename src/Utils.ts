@@ -1,7 +1,7 @@
 import Card from "./Card";
 import { CARD_SYMBOLS_ARRAY } from "./Constants";
 
-function shuffle<T>(array: T[]) {
+export function shuffle<T>(array: T[]) {
     const shuffled: T[] = [];
     const unusedIndexes = Array.from({ length: array.length }, (_, i) => i);
     for (let _ = 0; _ < array.length; _++) {
@@ -11,7 +11,11 @@ function shuffle<T>(array: T[]) {
     return shuffled;
 }
 
-export const generateDefaultDeck = () => Array.from({ length: 52 }, (_, i) => new Card(i % 13 + 1, CARD_SYMBOLS_ARRAY[Math.floor(i / 13)]));
+// TODO: refactor this
+export function generateDefaultDeck() {
+    return Array.from({ length: 52 }, (_, i) => new Card(i % 13 + 1, CARD_SYMBOLS_ARRAY[Math.floor(i / 13)]));
+}
 
-
-export default { shuffle };
+export function generateCards(n: number): Card[] {
+    return shuffle<Card>(generateDefaultDeck()).splice(0, n);
+}
