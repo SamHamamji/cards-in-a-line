@@ -4,7 +4,13 @@ import Player from "./Player";
 import { generateCards } from "./Utils";
 
 interface Range {
-    first: number; last: number;
+    first: number;
+    last: number;
+}
+
+interface Event {
+    choice: CHOICES;
+    pickedCard: Card;
 }
 
 class Game {
@@ -15,6 +21,11 @@ class Game {
     readonly cardsNumber: number;
     readonly board: Card[];
     readonly range: Range;
+    /** 
+     * @summary History of chronological events
+     * @description The first index corresponds to the earliest event
+     */
+    readonly history: Event[] = [];
 
     constructor(players: Player[], board: Card[] = Game.generateCards(52)) {
         this.players = players;
@@ -37,7 +48,12 @@ class Game {
         const choice = this.currentPlayer.strategy(this);
         const pickedCard = this.pickCard(choice);
         this.changeScore(pickedCard);
+        this.updateHistory(choice, pickedCard);
         this.switchPlayer();
+    }
+
+    private updateHistory(choice: CHOICES, pickedCard: Card) {
+        this.history.push({ choice, pickedCard });
     }
 
     private pickCard(choice: CHOICES): Card {

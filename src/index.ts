@@ -16,3 +16,4 @@ game.play();
 
 console.log(game.toString());
 console.log(game.scores);
+console.log(game.history);
