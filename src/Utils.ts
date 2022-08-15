@@ -11,9 +11,12 @@ export function shuffle<T>(array: T[]) {
     return shuffled;
 }
 
-// TODO: refactor this
 export function generateDefaultDeck() {
-    return Array.from({ length: 52 }, (_, i) => new Card(i % 13 + 1, CARD_SYMBOLS_ARRAY[Math.floor(i / 13)]));
+    const deck: Card[] = [];
+    for (let i = 0; i < 52; i++) {
+        deck.push(new Card(i % 13 + 1, CARD_SYMBOLS_ARRAY[Math.floor(i / 13)]));
+    }
+    return deck;
 }
 
 export function generateCards(n: number): Card[] {
