@@ -2,16 +2,8 @@ import Card from "./Card";
 import { CHOICES } from "./Constants";
 import Player from "./Player";
 import { generateCards } from "./Utils";
+import { Event, Range } from "./types";
 
-interface Range {
-    first: number;
-    last: number;
-}
-
-interface Event {
-    choice: CHOICES;
-    pickedCard: Card;
-}
 
 class Game {
     readonly players: Player[];

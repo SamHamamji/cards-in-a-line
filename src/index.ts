@@ -1,12 +1,9 @@
-import { CHOICES } from "./Constants";
 import Game from "./Game";
-import Player, { StrategyFunction } from "./Player";
+import Player from "./Player";
+import { alwaysFirst, alwaysLast } from "./Strategies";
 
 // The default card number is 52
 const board = Game.generateCards(20);
-
-const alwaysFirst: StrategyFunction = (game) => CHOICES.FIRST;
-const alwaysLast: StrategyFunction = (game) => CHOICES.LAST;
 
 const game = new Game([
     new Player("Player 1", alwaysFirst),

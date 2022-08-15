@@ -1,7 +1,4 @@
-import { CHOICES } from "./Constants";
-import Game from "./Game";
-
-export type StrategyFunction = (game: Game) => CHOICES
+import { StrategyFunction } from "./types";
 
 class Player {
     public name: string;
