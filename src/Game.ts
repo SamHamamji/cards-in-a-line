@@ -80,7 +80,7 @@ class Game {
         return this.range.last === this.range.first;
     }
 
-    private static generateCards = generateCards;
+    public static generateCards = generateCards;
 
     public toString(): string {
         // TODO: make a better logger

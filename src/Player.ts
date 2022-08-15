@@ -1,7 +1,7 @@
 import { CHOICES } from "./Constants";
 import Game from "./Game";
 
-type StrategyFunction = (game: Game) => CHOICES
+export type StrategyFunction = (game: Game) => CHOICES
 
 class Player {
     public name: string;
