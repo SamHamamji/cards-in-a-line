@@ -1,14 +1,20 @@
-import { StrategyFunction } from "./types";
+import colors from "colors/safe";
+import { StrategyFunction, ColorFunction } from "./types";
 
 class Player {
-    public name: string;
-    public strategy: StrategyFunction;
+    public readonly name: string;
+    public readonly strategy: StrategyFunction;
+    public readonly colorFunction: ColorFunction;
 
-    constructor(name: string, strategy: StrategyFunction) {
+    constructor(name: string, strategy: StrategyFunction, colorFunction: ColorFunction = (s) => s) {
         this.name = name;
         this.strategy = strategy;
+        this.colorFunction = colorFunction;
     }
 
+    get colorizedName() {
+        return this.colorFunction(this.name);
+    }
 
 }
 

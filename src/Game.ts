@@ -1,3 +1,4 @@
+import colors from "colors/safe";
 import Card from "./Card";
 import { CHOICES } from "./Constants";
 import Player from "./Player";
@@ -18,6 +19,10 @@ class Game {
      * @description The first index corresponds to the earliest event
      */
     readonly history: Event[] = [];
+    /** 
+     * @summary Map from card to index of event in history 
+    */
+    readonly eventIndexByCard = new Map<Card, number>();
 
     constructor(players: Player[], board: Card[] = Game.generateCards(52)) {
         this.players = players;
@@ -30,22 +35,29 @@ class Game {
 
     get currentPlayer() { return this.players[this.currentPlayerIndex]; }
 
-    public play() {
-        while (!this.isOver()) {
-            this.playOneTurn();
-        }
-    }
+    public static generateCards = generateCards;
 
-    public playOneTurn() {
-        const choice = this.currentPlayer.strategy(this);
+    public async play() {
+        while (!this.isLastTurn()) {
+            await this.playOneTurn();
+        }
+        const choice = CHOICES.FIRST;
         const pickedCard = this.pickCard(choice);
         this.changeScore(pickedCard);
-        this.updateHistory(choice, pickedCard);
+        this.updateHistory(choice, pickedCard, this.currentPlayerIndex);
+    }
+
+    private async playOneTurn() {
+        const choice = await this.currentPlayer.strategy(this);
+        const pickedCard = this.pickCard(choice);
+        this.changeScore(pickedCard);
+        this.updateHistory(choice, pickedCard, this.currentPlayerIndex);
         this.switchPlayer();
     }
 
-    private updateHistory(choice: CHOICES, pickedCard: Card) {
-        this.history.push({ choice, pickedCard });
+    private updateHistory(choice: CHOICES, pickedCard: Card, playerIndex: number) {
+        this.history.push({ choice, pickedCard, playerIndex });
+        this.eventIndexByCard.set(pickedCard, this.history.length - 1);
     }
 
     private pickCard(choice: CHOICES): Card {
@@ -69,14 +81,28 @@ class Game {
     }
 
     public isOver(): boolean {
-        return this.range.last === this.range.first;
+        return this.range.last - this.range.first === -1;
     }
 
-    public static generateCards = generateCards;
+    public isLastTurn(): boolean {
+        return this.range.last === this.range.first;
+
+    }
 
     public toString(): string {
-        // TODO: make a better logger
-        return this.board.join(" ");
+        return this.board.map((card, index) => {
+            if (index === this.range.first || index === this.range.last && this.range.first <= this.range.last) {
+                return colors.bold(card.toString());
+            } else if (index > this.range.first && index < this.range.last) {
+                return colors.dim(card.toString());
+            } else {
+                return this.players[this.history[this.eventIndexByCard.get(card) || 0].playerIndex].colorFunction(card.toString());
+            }
+        }).join(" ");
+    }
+
+    public scoreString() {
+        return colors.bold("Scores: ") + this.players.map((player, index) => `${player.colorizedName}: ${this.scores[index]}`).join(" | ");
     }
 }
 
