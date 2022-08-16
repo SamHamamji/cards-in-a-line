@@ -7,9 +7,6 @@ interface Input {
 
 const userInput: StrategyFunction = async (game) => {
     const inquirer = await (await import("inquirer")).default;
-    console.clear();
-    console.log(game.scoreString());
-    console.log(game.toString());
     console.log();
     const input = await inquirer.prompt<Input>({
         type: "list",

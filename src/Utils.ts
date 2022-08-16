@@ -22,3 +22,5 @@ export function generateDefaultDeck() {
 export function generateCards(n: number): Card[] {
     return shuffle<Card>(generateDefaultDeck()).splice(0, n);
 }
+
+export const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));

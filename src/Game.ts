@@ -2,7 +2,7 @@ import colors from "colors/safe";
 import Card from "./Card";
 import { CHOICES } from "./Constants";
 import Player from "./Player";
-import { generateCards } from "./Utils";
+import { delay, generateCards } from "./Utils";
 import { Event, Range } from "./types";
 
 
@@ -38,13 +38,18 @@ class Game {
     public static generateCards = generateCards;
 
     public async play() {
-        while (!this.isLastTurn()) {
+        while (!this.isOver()) {
+            console.log(this.scoreString());
+            console.log(this.toString());
             await this.playOneTurn();
+            await delay(1000);
+            console.clear();
         }
-        const choice = CHOICES.FIRST;
-        const pickedCard = this.pickCard(choice);
-        this.changeScore(pickedCard);
-        this.updateHistory(choice, pickedCard, this.currentPlayerIndex);
+        // const choice = CHOICES.FIRST;
+        // const pickedCard = this.pickCard(choice);
+        // this.changeScore(pickedCard);
+        // this.updateHistory(choice, pickedCard, this.currentPlayerIndex);
+        // await delay(1000);
     }
 
     private async playOneTurn() {
@@ -91,7 +96,7 @@ class Game {
 
     public toString(): string {
         return this.board.map((card, index) => {
-            if (index === this.range.first || index === this.range.last && this.range.first <= this.range.last) {
+            if ((index === this.range.first || index === this.range.last) && this.range.first <= this.range.last) {
                 return colors.bold(card.toString());
             } else if (index > this.range.first && index < this.range.last) {
                 return colors.dim(card.toString());
