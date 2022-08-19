@@ -12,6 +12,7 @@ export interface Range {
 export interface Event {
     choice: CHOICES;
     pickedCard: Card;
+    pickedCardIndex: number;
     playerIndex: number;
 }
 

@@ -39,46 +39,45 @@ class Game {
 
     public async play() {
         while (!this.isOver()) {
-            console.log(this.scoreString());
+            console.log(this.scoreLine());
             console.log(this.toString());
+            console.log(this.arrowLine());
+            await delay(3000);
             await this.playOneTurn();
-            await delay(1000);
             console.clear();
         }
-        // const choice = CHOICES.FIRST;
-        // const pickedCard = this.pickCard(choice);
-        // this.changeScore(pickedCard);
-        // this.updateHistory(choice, pickedCard, this.currentPlayerIndex);
-        // await delay(1000);
     }
 
     private async playOneTurn() {
         const choice = await this.currentPlayer.strategy(this);
-        const pickedCard = this.pickCard(choice);
-        this.changeScore(pickedCard);
-        this.updateHistory(choice, pickedCard, this.currentPlayerIndex);
+        const pickedCardIndex = this.pickCard(choice);
+        this.changeScore(pickedCardIndex);
+        this.updateHistory(choice, pickedCardIndex, this.currentPlayerIndex);
         this.switchPlayer();
     }
 
-    private updateHistory(choice: CHOICES, pickedCard: Card, playerIndex: number) {
-        this.history.push({ choice, pickedCard, playerIndex });
+    private updateHistory(choice: CHOICES, pickedCardIndex: number, playerIndex: number) {
+        const pickedCard = this.board[pickedCardIndex];
+        this.history.push({ choice, pickedCard, pickedCardIndex, playerIndex });
         this.eventIndexByCard.set(pickedCard, this.history.length - 1);
     }
 
-    private pickCard(choice: CHOICES): Card {
+    /**
+     * @returns picked card index
+     */
+    private pickCard(choice: CHOICES): number {
         let pickedCard: Card;
         if (choice === CHOICES.FIRST) {
             pickedCard = this.board[this.range.first];
-            this.range.first++;
+            return this.range.first++;
         } else {
             pickedCard = this.board[this.range.last];
-            this.range.last--;
+            return this.range.last--;
         }
-        return pickedCard;
     }
 
-    private changeScore(pickedCard: Card) {
-        this.scores[this.currentPlayerIndex] += pickedCard.value;
+    private changeScore(pickedCardIndex: number) {
+        this.scores[this.currentPlayerIndex] += this.board[pickedCardIndex].value;
     }
 
     private switchPlayer() {
@@ -106,8 +105,16 @@ class Game {
         }).join(" ");
     }
 
-    public scoreString() {
+    public scoreLine() {
         return colors.bold("Scores: ") + this.players.map((player, index) => `${player.colorizedName}: ${this.scores[index]}`).join(" | ");
+    }
+
+    public arrowLine() {
+        if (this.history.length === 0) {
+            return "";
+        }
+        const currentEvent = this.history[this.history.length - 1];
+        return " ".repeat(4 * currentEvent.pickedCardIndex + 1) + this.players[currentEvent.playerIndex].colorFunction("🡅");
     }
 }
 
