@@ -66,12 +66,9 @@ class Game {
      * @returns picked card index
      */
     private pickCard(choice: CHOICES): number {
-        let pickedCard: Card;
         if (choice === CHOICES.FIRST) {
-            pickedCard = this.board[this.range.first];
             return this.range.first++;
         } else {
-            pickedCard = this.board[this.range.last];
             return this.range.last--;
         }
     }

@@ -1,15 +1,15 @@
 import colors from "colors/safe";
 import Game from "./Game";
 import Player from "./Player";
-import { alwaysFirst, alwaysLast, userInput } from "./Strategies";
+import { alwaysFirst, randomChoice, userInput } from "./Strategies";
 
 // The default card number is 52
 const board = Game.generateCards(20);
 
 const game = new Game([
-    new Player("Player 1", alwaysFirst, colors.red),
-    new Player("Player 2", userInput, colors.cyan),
-    new Player("Player 3", alwaysLast, colors.yellow),
+    new Player("Bot 1", alwaysFirst, colors.red),
+    new Player("Me", userInput, colors.cyan),
+    new Player("Bot 2", randomChoice, colors.yellow),
 ], board);
 
 (async () => {
