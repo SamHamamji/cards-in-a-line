@@ -19,10 +19,6 @@ class Game {
      * @description The first index corresponds to the earliest event
      */
     readonly history: Event[] = [];
-    /** 
-     * @summary Map from card to index of event in history 
-    */
-    readonly eventIndexByCard = new Map<Card, number>();
 
     constructor(players: Player[], board: Card[] = Game.generateCards(52)) {
         this.players = players;
@@ -42,7 +38,7 @@ class Game {
             console.log(this.scoreLine());
             console.log(this.toString());
             console.log(this.arrowLine());
-            await delay(3000);
+            await delay(1000);
             await this.playOneTurn();
             console.clear();
         }
@@ -59,7 +55,6 @@ class Game {
     private updateHistory(choice: CHOICES, pickedCardIndex: number, playerIndex: number) {
         const pickedCard = this.board[pickedCardIndex];
         this.history.push({ choice, pickedCard, pickedCardIndex, playerIndex });
-        this.eventIndexByCard.set(pickedCard, this.history.length - 1);
     }
 
     /**
@@ -91,15 +86,19 @@ class Game {
     }
 
     public toString(): string {
-        return this.board.map((card, index) => {
-            if ((index === this.range.first || index === this.range.last) && this.range.first <= this.range.last) {
-                return colors.bold(card.toString());
-            } else if (index > this.range.first && index < this.range.last) {
-                return colors.dim(card.toString());
-            } else {
-                return this.players[this.history[this.eventIndexByCard.get(card) || 0].playerIndex].colorFunction(card.toString());
-            }
-        }).join(" ");
+        const boardRepr = new Array(this.cardsNumber).fill("   ");
+        this.history.forEach(event => {
+            boardRepr[event.pickedCardIndex] = this.players[event.playerIndex].colorize(event.pickedCard.toString());
+        });
+        for (let index = this.range.first; index <= this.range.last; index++) {
+            boardRepr[index] = colors.dim(this.board[index].toString());
+        }
+        if (!this.isOver()) {
+            [this.range.first, this.range.last].forEach(index => {
+                boardRepr[index] = colors.bold(this.board[index].toString());
+            });
+        }
+        return boardRepr.join(" ");
     }
 
     public scoreLine() {
@@ -111,7 +110,7 @@ class Game {
             return "";
         }
         const currentEvent = this.history[this.history.length - 1];
-        return " ".repeat(4 * currentEvent.pickedCardIndex + 1) + this.players[currentEvent.playerIndex].colorFunction("🡅");
+        return " ".repeat(4 * currentEvent.pickedCardIndex + 1) + this.players[currentEvent.playerIndex].colorize("🡅");
     }
 }
 
