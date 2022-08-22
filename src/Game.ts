@@ -33,12 +33,12 @@ class Game {
 
     public static generateCards = generateCards;
 
-    public async play() {
+    public async play(timeDelay = 1500) {
         while (!this.isOver()) {
             console.log(this.scoreLine());
             console.log(this.toString());
             console.log(this.arrowLine());
-            await delay(1000);
+            await delay(timeDelay);
             await this.playOneTurn();
             console.clear();
         }
