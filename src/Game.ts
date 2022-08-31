@@ -2,9 +2,8 @@ import colors from "colors/safe";
 import Card from "./Card";
 import { CHOICES } from "./Constants";
 import Player from "./Player";
-import { delay, generateCards } from "./Utils";
+import { addBorder, delay, generateCards } from "./Utils";
 import { Event, Range } from "./types";
-
 
 class Game {
     readonly players: Player[];
@@ -35,9 +34,8 @@ class Game {
 
     public async play(timeDelay = 1500) {
         while (!this.isOver()) {
-            console.log(this.scoreLine());
-            console.log(this.toString());
-            console.log(this.arrowLine());
+            console.log(colors.bold("Scores: ") + this.scoreLine());
+            console.log(addBorder(this.boardLine() + "\n" + this.arrowLine()));
             await delay(timeDelay);
             await this.playOneTurn();
             console.clear();
@@ -53,8 +51,13 @@ class Game {
     }
 
     private updateHistory(choice: CHOICES, pickedCardIndex: number, playerIndex: number) {
-        const pickedCard = this.board[pickedCardIndex];
-        this.history.push({ choice, pickedCard, pickedCardIndex, playerIndex });
+        this.history.push({
+            choice,
+            pickedCard: this.board[pickedCardIndex],
+            pickedCardIndex,
+            playerIndex,
+            time: this.history.length
+        });
     }
 
     /**
@@ -85,7 +88,7 @@ class Game {
 
     }
 
-    public toString(): string {
+    public boardLine(): string {
         const boardRepr = new Array(this.cardsNumber).fill("   ");
         this.history.forEach(event => {
             boardRepr[event.pickedCardIndex] = this.players[event.playerIndex].colorize(event.pickedCard.toString());
@@ -102,15 +105,66 @@ class Game {
     }
 
     public scoreLine() {
-        return colors.bold("Scores: ") + this.players.map((player, index) => `${player.colorizedName}: ${this.scores[index]}`).join(" | ");
+        return this.players.map((player, index) => `${player.colorizedName}: ${this.scores[index]}`).join(" | ");
     }
 
-    public arrowLine() {
+    private arrowLine() {
         if (this.history.length === 0) {
             return "";
         }
         const currentEvent = this.history[this.history.length - 1];
-        return " ".repeat(4 * currentEvent.pickedCardIndex + 1) + this.players[currentEvent.playerIndex].colorize("🡅");
+        return " ".repeat(4 * currentEvent.pickedCardIndex + 1) + this.players[currentEvent.playerIndex].colorize(colors.bold("^"));
+    }
+
+    private historyLine() {
+        const historyRepr = new Array(this.cardsNumber).fill("   ");
+        this.history.forEach((element, time) => {
+            historyRepr[element.pickedCardIndex] = ` ${(time + 1).toString().padEnd(2, " ")}`;
+        });
+        return colors.dim(historyRepr.join(" "));
+    }
+
+    /**
+     * @returns a 2d array of objects containing the player and their score
+     * @description the first element of the outer array contains the winner(s), etc... 
+     */
+    private ranking() {
+        const answer: {
+            player: Player,
+            score: number
+        }[][] = this.players.map((player, index) => ([{
+            player,
+            score: this.scores[index]
+        }]));
+        answer.sort((a, b) => (b[0].score - a[0].score));
+        for (let index = 0; index < answer.length - 1; index++) {
+            if (answer[index][0].score == answer[index + 1][0].score) {
+                answer[index].push(answer[index + 1][0]);
+                answer.splice(index + 1, 1);
+                index--;
+            }
+        }
+        return answer;
+    }
+
+    private rankingLines(): string {
+        return this.ranking().map((array, index) =>
+            array.map((element) =>
+                `${(index + 1).toString()}) ${element.player.colorizedName}: ${element.score.toString()}`
+            ).join("\n")
+        ).join("\n");
+    }
+
+    // 1) Maral: 33
+    // 1) Eyelin: 33
+    // 2) Lena: 29
+    // 3) Mia: 14
+    // 4) Sako: 12
+
+    public endScreen(): string {
+        return "The game has ended\n"
+            + addBorder(this.boardLine() + "\n" + this.historyLine()) // shows board and history
+            + "\nRanking:\n" + this.rankingLines(); // shows ranking
     }
 }
 
