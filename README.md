@@ -5,6 +5,8 @@ My ultimate goal is to write many strategies including:
  * Minimax
  * Different Greedy Strategies
  * Random
+ * Choose Maximum
+ * Choose odd/even
  * SameChoice
 ---
 ### Example code:

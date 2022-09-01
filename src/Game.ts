@@ -43,7 +43,7 @@ class Game {
     }
 
     private async playOneTurn() {
-        const choice = await this.currentPlayer.strategy(this);
+        const choice = await this.currentPlayer.strategy.choice(this);
         const pickedCardIndex = this.pickCard(choice);
         this.changeScore(pickedCardIndex);
         this.updateHistory(choice, pickedCardIndex, this.currentPlayerIndex);
@@ -150,16 +150,10 @@ class Game {
     private rankingLines(): string {
         return this.ranking().map((array, index) =>
             array.map((element) =>
-                `${(index + 1).toString()}) ${element.player.colorizedName}: ${element.score.toString()}`
+                `${(index + 1).toString()}. ${element.player.colorizedName} (${element.player.strategy.name}): ${element.score.toString()}`
             ).join("\n")
         ).join("\n");
     }
-
-    // 1) Maral: 33
-    // 1) Eyelin: 33
-    // 2) Lena: 29
-    // 3) Mia: 14
-    // 4) Sako: 12
 
     public endScreen(): string {
         return "The game has ended\n"

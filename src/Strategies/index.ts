@@ -1,4 +1,4 @@
-export { default as alwaysFirst } from "./alwaysFirst";
-export { default as alwaysLast } from "./alwaysLast";
-export { default as userInput } from "./userInput";
-export { default as randomChoice } from "./randomChoice";
+export { default as AlwaysFirst } from "./AlwaysFirst";
+export { default as AlwaysLast } from "./AlwaysLast";
+export { default as Random } from "./Random";
+export { default as UserInput } from "./UserInput";

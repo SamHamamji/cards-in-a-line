@@ -1,6 +1,5 @@
 import Card from "./Card";
 import { CHOICES } from "./Constants";
-import Game from "./Game";
 
 export type ColorFunction = (str: string) => string;
 
@@ -28,4 +27,3 @@ export interface Border {
     bottomLeft: string;
 }
 
-export type StrategyFunction = ((game: Game) => CHOICES) | ((game: Game) => Promise<CHOICES>);

@@ -3,16 +3,17 @@ import Card from "./Card";
 import { CARD_SYMBOLS } from "./Constants";
 import Game from "./Game";
 import Player from "./Player";
-import { randomChoice } from "./Strategies";
+import { AlwaysFirst, AlwaysLast, Random, UserInput } from "./Strategies";
 
 // The default card number is 52
-const board = [1, 2, 1, 1, 1, 2, 1, 1, 2, 1, 1, 2].map((element: number) => new Card(element, CARD_SYMBOLS.CLUBS));
+// const board = [1, 2, 1, 1, 1, 2, 1, 1, 2, 1, 1, 2].map((element: number) => new Card(element, CARD_SYMBOLS.CLUBS));
+const board = Game.generateCards(16);
 
 const game = new Game([
-    new Player("Bot 1", randomChoice, colors.red),
-    new Player("Bot 2", randomChoice, colors.yellow),
-    new Player("Bot 3", randomChoice, colors.cyan),
-    new Player("Bot 4", randomChoice, colors.green)
+    new Player("Bot 1", new Random(), colors.red),
+    new Player("Bot 2", new AlwaysFirst(), colors.yellow),
+    new Player("Bot 3", new AlwaysLast(), colors.cyan),
+    new Player("Sam", new UserInput(), colors.green)
 ], board);
 
 (async () => {
