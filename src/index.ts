@@ -1,18 +1,15 @@
 import colors from "colors/safe";
-import Card from "./Card";
-import { CARD_SYMBOLS } from "./Constants";
 import Game from "./Game";
 import Player from "./Player";
-import { ChooseMaximum, Random, UserInput } from "./Strategies";
+import { Minimax, UserInput } from "./Strategies";
 
 // The default card number is 52
 // const board = [1, 2, 1, 1, 1, 2, 1, 1, 2, 1, 1, 2].map((element: number) => new Card(element, CARD_SYMBOLS.CLUBS));
-const board = Game.generateCards(16);
+const board = Game.generateCards(52);
 
 const game = new Game([
-    new Player("Bot 1", new Random(), colors.red),
-    new Player("Sam", new UserInput(), colors.green),
-    new Player("Bot 2", new ChooseMaximum(ChooseMaximum.random), colors.yellow)
+    new Player("Bot 1", new Minimax(), colors.yellow),
+    new Player("Bot 2", new Minimax(), colors.green)
 ], board);
 
 (async () => {

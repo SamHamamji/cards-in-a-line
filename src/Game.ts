@@ -150,7 +150,7 @@ class Game {
     private rankingLines(): string {
         return this.ranking().map((array, index) =>
             array.map((element) =>
-                `${(index + 1).toString()}. ${element.player.colorizedName} (${element.player.strategy.name}): ${element.score.toString()}`
+                `${index + 1}. ${element.player.colorizedName} (${element.player.strategy.name}): ${element.score}`
             ).join("\n")
         ).join("\n");
     }

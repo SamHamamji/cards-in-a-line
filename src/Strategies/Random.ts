@@ -7,7 +7,7 @@ class Random extends Strategy {
     readonly name;
     constructor(firstProbability = 0.5) {
         super();
-        this.name = `Random: ${(firstProbability).toString()}-${(1 - firstProbability).toString()}`;
+        this.name = `Random: ${firstProbability}-${1 - firstProbability}`;
         this.firstProbability = firstProbability;
     }
     choice() {
