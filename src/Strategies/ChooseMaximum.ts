@@ -8,14 +8,10 @@ import Strategy from "../Strategy";
 class ChooseMaximum extends Strategy {
     readonly name;
     readonly choiceIfEqual: (game: Game) => CHOICES;
-    constructor(choiceIfEqual: (game: Game) => CHOICES) {
+    constructor(choiceIfEqual?: (game: Game) => CHOICES) {
         super();
         this.name = "ChooseMaximum";
-        if (typeof choiceIfEqual !== undefined) {
-            this.choiceIfEqual = choiceIfEqual;
-        } else {
-            this.choiceIfEqual = ChooseMaximum.random;
-        }
+        this.choiceIfEqual = choiceIfEqual || ChooseMaximum.random;
     }
 
     choice(game: Game) {
