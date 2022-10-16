@@ -7,3 +7,6 @@
 * [ ] use online minimax to check validity of mine
 * [ ] improve minimax when the 2 possibilities have the same outcome by using maximum strategy or something different
 * [ ] improve minimax performance
+* [ ] make a boolean in Minimax: maximizing score vs maximizing ranking
+* [ ] move matrix and nashequilibrium from Minimax to Game
+* [ ] Fix bug at lines 25-27 of index.ts

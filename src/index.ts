@@ -1,21 +1,28 @@
 import colors from "colors/safe";
 import Game from "./Game";
 import Player from "./Player";
-import { ChooseMaximum, Minimax, Random, UserInput } from "./Strategies";
+import { Minimax, UserInput } from "./Strategies";
+import { delay } from "./Utils";
 
-// The default card number is 52
-// const board = [1, 2, 1, 1, 1, 2, 1, 1, 2, 1, 1, 2].map((element: number) => new Card(element, CARD_SYMBOLS.CLUBS));
-const board = Game.generateCards(24);
+// const board = [11, 1, 5, 4, 11, 13, 4, 2].map((element: number) => new Card(element, CARD_SYMBOLS.CLUBS));
+const cardsNumber = 8;
+const board = Game.generateCards(cardsNumber);
 
-const game = new Game([
+const players = [
     new Player("Bot 1", new Minimax(), colors.yellow),
-    new Player("Player 1", new UserInput(), colors.green),
-    new Player("Bot 2", new ChooseMaximum(), colors.red),
-    new Player("Bot 2", new Random(), colors.red)
+    new Player("Player 1", new UserInput(), colors.green)
+];
 
-], board);
+const game = new Game(players, board);
+const minimax = players[0].strategy as Minimax;
 
 (async () => {
+    console.log("Nash equilibrium: ",
+        (minimax.nashEquilibrium(game)));
+    delay(5000);
     await game.play(1000);
     console.log(game.endScreen());
+    // This causes an error
+    // console.log("Nash equilibrium: ",
+    //     (minimax.nashEquilibrium(game, { first: 0, last: cardsNumber - 1 })));
 })();

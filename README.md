@@ -4,6 +4,7 @@
 My ultimate goal is to write many strategies including:
 * [x] Always First/Last
 * [x] Choose Maximum
+* [ ] Minimize opponent's maximum
 * [ ] Choose Odd/Even
 * [ ] Different Greedy Strategies
 * [x] Minimax
