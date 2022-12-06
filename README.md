@@ -2,6 +2,9 @@
 
 Variant of the coins in a line game using cards, written in Typescript and using node.
 
+## Demo
+![](demo.gif)
+
 ## Quick start
 
 ### Setup
