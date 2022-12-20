@@ -11,20 +11,20 @@ interface Situation {
 
 class Minimax extends Strategy {
     readonly name;
-    private generatedMatrix: boolean;
+    private computedMatrix: boolean;
     private matrix: Situation[][];
     private game: Game | null;
     constructor() {
         super();
         this.name = "Minimax";
         this.matrix = [];
-        this.generatedMatrix = false;
+        this.computedMatrix = false;
         this.game = null;
     }
 
     async choice(game: Game) {
         this.checkGameCorresponds(game);
-        if (!this.generatedMatrix)
+        if (!this.computedMatrix)
             this.computeMatrix(game);
         return this.matrix[game.range.first][game.range.last].bestChoice;
     }
@@ -58,6 +58,7 @@ class Minimax extends Strategy {
         this.checkGameCorresponds(game);
         this.initializeMatrix(game);
         this.computeMatrixHelper(game, game.range.first, game.range.last, game.currentPlayerIndex);
+        this.computedMatrix = true;
     }
 
     private computeMatrixHelper(game: Game, i: number, j: number, playerIndex: number) {
@@ -105,7 +106,7 @@ class Minimax extends Strategy {
      * @returns the scores array of the nash equilibrium in this game state
      */
     public nashEquilibrium(game: Game, range?: Range) {
-        if (!this.generatedMatrix) {
+        if (!this.computedMatrix) {
             this.computeMatrix(game);
         } else {
             this.checkGameCorresponds(game);
