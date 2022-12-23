@@ -9,13 +9,12 @@ interface Situation {
     bestChoice: CHOICES
 }
 
-class Minimax extends Strategy {
+class Minimax implements Strategy {
     readonly name;
     private computedMatrix: boolean;
     private matrix: Situation[][];
     private game: Game | null;
     constructor() {
-        super();
         this.name = "Minimax";
         this.matrix = [];
         this.computedMatrix = false;

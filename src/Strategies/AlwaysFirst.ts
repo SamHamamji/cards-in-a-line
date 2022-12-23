@@ -1,7 +1,7 @@
 import { CHOICES } from "../Constants";
 import Strategy from "../Strategy";
 
-class AlwaysFirst extends Strategy {
+class AlwaysFirst implements Strategy {
     name = "AlwaysFirst";
     choice() {
         return CHOICES.FIRST;

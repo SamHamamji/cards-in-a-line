@@ -5,7 +5,7 @@ import UserInput from "./UserInput";
 import ChooseMaximum from "./ChooseMaximum";
 import Minimax from "./Minimax";
 
-export default {
+const Strategies = {
     AlwaysFirst,
     AlwaysLast,
     Random,
@@ -13,3 +13,7 @@ export default {
     ChooseMaximum,
     Minimax,
 };
+
+export type StrategyName = keyof typeof Strategies
+
+export default Strategies;

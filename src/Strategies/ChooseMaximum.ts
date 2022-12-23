@@ -5,11 +5,10 @@ import Strategy from "../Strategy";
 /**
  * chooses the card with the highest value. If both cards have the same value, the choice is done randomly
  */
-class ChooseMaximum extends Strategy {
+class ChooseMaximum implements Strategy {
     readonly name;
     readonly choiceIfEqual: (game: Game) => CHOICES;
     constructor(choiceIfEqual?: (game: Game) => CHOICES) {
-        super();
         this.name = "ChooseMaximum";
         this.choiceIfEqual = choiceIfEqual || ChooseMaximum.random;
     }
