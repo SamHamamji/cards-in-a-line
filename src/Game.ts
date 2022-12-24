@@ -4,6 +4,7 @@ import { CHOICES } from "./Constants";
 import Player from "./Player";
 import { addBorder, delay, generateCards } from "./Utils";
 import { Event, Range } from "./types";
+import UserInput from "./Strategies/UserInput";
 
 class Game {
     readonly players: Player[];
@@ -36,7 +37,8 @@ class Game {
         while (!this.isOver()) {
             console.log(colors.bold("Scores: ") + this.scoreLine());
             console.log(addBorder(this.boardLine() + "\n" + this.arrowLine()));
-            await delay(timeDelay);
+            if (!(this.currentPlayer.strategy instanceof UserInput))
+                await delay(timeDelay);
             await this.playOneTurn();
             console.clear();
         }
