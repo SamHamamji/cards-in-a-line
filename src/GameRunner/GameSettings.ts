@@ -161,7 +161,16 @@ export class GameSettings {
         return { type: ActionType.EditPlayer, playerIndex: action.playerIndex! };
     }
 
-    private [ActionType.Start](action: Action) {
+    private async [ActionType.Start](action: Action): Promise<Action | null> {
+        const inquirer = (await inquirerPromise).default;
+        const input = await inquirer.prompt<{ confirmed: boolean; }>({
+            type: "confirm",
+            name: "confirmed",
+            message: "Start game?",
+            default: true,
+        });
+        if (!input.confirmed)
+            return { type: ActionType.GoHome };
         return null;
     }
 
