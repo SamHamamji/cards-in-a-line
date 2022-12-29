@@ -2,6 +2,7 @@
 
 import colors from "colors/safe";
 import Game from "../Game";
+import Graphics from "../Graphics/index";
 import Player from "../Player";
 import Strategies, { StrategyName } from "../Strategies";
 import { Action, ActionType } from "./Action";
@@ -38,10 +39,10 @@ export class GameSettings {
     async setup() {
         let currentAction: Action | null = { type: ActionType.GoHome };
         do {
-            console.clear();
             currentAction = await this[currentAction.type](currentAction);
+            console.clear();
+            console.log(Graphics.banner);
         } while (currentAction !== null);
-        console.clear();
     }
 
     private async [ActionType.GoHome](action: Action): Promise<Action> {

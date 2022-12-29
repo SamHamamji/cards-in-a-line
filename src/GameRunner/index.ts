@@ -1,3 +1,4 @@
+import Graphics from "../Graphics/index";
 import { GameSettings } from "./GameSettings";
 
 class GameRunner {
@@ -8,6 +9,7 @@ class GameRunner {
     }
 
     async setup() {
+        console.log(Graphics.banner);
         await this.settings.setup();
     }
 
