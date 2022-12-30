@@ -248,16 +248,15 @@ export class GameSettings {
         const separatorString = colors.gray("──────────────");
         return new (await inquirerPromise).default.Separator(separatorString);
     }
-}
 
-// const ActionHeader: { [key: ActionType]: string } = {
-//     [ActionType.AddBot]: "",
-//     [ActionType.AddHuman]: "",
-//     [ActionType.EditName]: "EditName",
-//     [ActionType.EditStrategy]: "EditStrategy",
-//     [ActionType.EditColor]: "EditColor",
-//     [ActionType.DeletePlayer]: "",
-//     [ActionType.EditPlayer]: "EditPlayer",
-//     [ActionType.GoHome]: "GoHome",
-//     [ActionType.Start]: "Start",
-// };
+    async askPlayAgain() {
+        const inquirer = (await inquirerPromise).default;
+        const input = await inquirer.prompt<{ choice: boolean; }>({
+            type: "confirm",
+            name: "choice",
+            message: "Play again?",
+            // default: true,
+        });
+        return input.choice;
+    }
+}
