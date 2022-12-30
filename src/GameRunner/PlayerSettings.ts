@@ -1,5 +1,6 @@
 import colors from "colors/safe";
-import { StrategyName } from "../Strategies";
+import Player from "../Player";
+import Strategies, { StrategyName } from "../Strategies/index";
 
 type PlayerColor = typeof PlayerSettings.playerColors[number];
 
@@ -25,6 +26,18 @@ class PlayerSettings {
 
     get colorFunction() {
         return colors[this.color];
+    }
+
+    isHuman() {
+        return this.strategy === "UserInput";
+    }
+
+    createPlayer() {
+        return new Player(
+            this.name,
+            new Strategies[this.strategy],
+            this.colorFunction,
+        );
     }
 }
 

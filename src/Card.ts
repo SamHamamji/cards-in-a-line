@@ -1,29 +1,25 @@
-import { CARD_SYMBOLS } from "./Constants";
+enum CARD_SYMBOL { SPADES, HEARTS, CLUBS, DIAMONDS }
+
+const cardSymbolIcon = {
+    [CARD_SYMBOL.SPADES]: "♠",
+    [CARD_SYMBOL.HEARTS]: "♥",
+    [CARD_SYMBOL.CLUBS]: "♣",
+    [CARD_SYMBOL.DIAMONDS]: "♦",
+};
 
 class Card {
     public value: number;
-    public type: CARD_SYMBOLS;
+    public type: CARD_SYMBOL;
 
-    constructor(value: number, type: CARD_SYMBOLS) {
+    constructor(value: number, type: CARD_SYMBOL) {
         this.value = value;
         this.type = type;
     }
 
     public toString(): string {
-        if (this.type == CARD_SYMBOLS.SPADES) {
-            return `${this.value.toString().padStart(2, "0")}♠`;
-        }
-        if (this.type == CARD_SYMBOLS.HEARTS) {
-            return `${this.value.toString().padStart(2, "0")}♥`;
-        }
-        if (this.type == CARD_SYMBOLS.CLUBS) {
-            return `${this.value.toString().padStart(2, "0")}♣`;
-        }
-        if (this.type == CARD_SYMBOLS.DIAMONDS) {
-            return `${this.value.toString().padStart(2, "0")}♦`;
-        }
-        return "UNKNOWN CARD TYPE";
+        return this.value.toString().padStart(2, "0") + cardSymbolIcon[this.type];
     }
 }
 
 export default Card;
+export { CARD_SYMBOL };

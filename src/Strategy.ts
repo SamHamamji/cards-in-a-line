@@ -1,5 +1,4 @@
-import { CHOICES } from "./Constants";
-import Game from "./Game";
+import Game, { CHOICES } from "./Game";
 
 interface Strategy {
     name: string;

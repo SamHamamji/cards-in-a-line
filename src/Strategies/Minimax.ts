@@ -1,7 +1,5 @@
-import { CHOICES } from "../Constants";
-import Game from "../Game";
+import Game, { CHOICES, Range } from "../Game";
 import Strategy from "../Strategy";
-import { Range } from "../types";
 
 interface Situation {
     scores: number[],

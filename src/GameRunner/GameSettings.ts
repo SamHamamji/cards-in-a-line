@@ -2,10 +2,11 @@
 
 import colors from "colors/safe";
 import Game from "../Game";
-import Graphics from "../Graphics/index";
+import Graphics from "../Graphics";
 import Player from "../Player";
-import Strategies, { StrategyName } from "../Strategies";
+import Strategies, { StrategyName } from "../Strategies/index";
 import { Action, ActionType } from "./Action";
+import CardGenerator from "./CardGenerator";
 import PlayerSettings, { PlayerColor } from "./PlayerSettings";
 const inquirerPromise = import("inquirer");
 
@@ -19,13 +20,11 @@ export class GameSettings {
     static readonly maxPlayerNameLength = 16;
 
     get humanPlayers(): number {
-        return this.players.filter(player => player.strategy === "UserInput"
-        ).length;
+        return this.players.filter(player => player.isHuman()).length;
     }
 
     get botPlayers(): number {
-        return this.players.filter(player => player.strategy !== "UserInput"
-        ).length;
+        return this.players.filter(player => !player.isHuman()).length;
     }
 
     constructor() {
@@ -234,20 +233,31 @@ export class GameSettings {
     }
 
     createGame(): Game {
-        const board = Game.generateCards(this.cardsNumber);
+        const board = CardGenerator.generateCards(this.cardsNumber);
         const players = this.createPlayers();
         return new Game(players, board);
     }
 
     private createPlayers(): Player[] {
-        return this.players.map(player => new Player(
-            player.name,
-            new Strategies[player.strategy],
-            player.colorFunction
-        ));
+        return this.players.map(playerSetting =>
+            playerSetting.createPlayer()
+        );
     }
 
     private static async createSeparator() {
-        return new (await inquirerPromise).default.Separator(colors.gray("──────────────"));
+        const separatorString = colors.gray("──────────────");
+        return new (await inquirerPromise).default.Separator(separatorString);
     }
 }
+
+// const ActionHeader: { [key: ActionType]: string } = {
+//     [ActionType.AddBot]: "",
+//     [ActionType.AddHuman]: "",
+//     [ActionType.EditName]: "EditName",
+//     [ActionType.EditStrategy]: "EditStrategy",
+//     [ActionType.EditColor]: "EditColor",
+//     [ActionType.DeletePlayer]: "",
+//     [ActionType.EditPlayer]: "EditPlayer",
+//     [ActionType.GoHome]: "GoHome",
+//     [ActionType.Start]: "Start",
+// };

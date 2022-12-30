@@ -1,11 +1,23 @@
 import colors from "colors/safe";
 import Card from "./Card";
-import { CHOICES } from "./Constants";
 import Player from "./Player";
-import { addBorder, delay, generateCards } from "./Utils";
-import { Event, Range } from "./types";
 import UserInput from "./Strategies/UserInput";
 import Graphics from "./Graphics";
+
+enum CHOICES { FIRST, LAST }
+
+interface Range {
+    first: number;
+    last: number;
+}
+
+interface Event {
+    choice: CHOICES;
+    pickedCard: Card;
+    pickedCardIndex: number;
+    playerIndex: number;
+    time: number;
+}
 
 class Game {
     readonly players: Player[];
@@ -21,7 +33,7 @@ class Game {
      */
     readonly history: Event[] = [];
 
-    constructor(players: Player[], board: Card[] = Game.generateCards(52)) {
+    constructor(players: Player[], board: Card[]) {
         this.players = players;
         this.board = board;
         this.cardsNumber = board.length;
@@ -32,14 +44,12 @@ class Game {
 
     get currentPlayer() { return this.players[this.currentPlayerIndex]; }
 
-    public static generateCards = generateCards;
-
     public async play(timeDelay: number) {
         while (!this.isOver()) {
             console.log(colors.bold("Scores: ") + this.scoreLine());
-            console.log(addBorder(this.boardLine() + "\n" + this.arrowLine()));
+            console.log(Graphics.addBorder(this.boardLine() + "\n" + this.arrowLine()));
             if (!(this.currentPlayer.strategy instanceof UserInput))
-                await delay(timeDelay);
+                await new Promise(resolve => setTimeout(resolve, timeDelay));
             await this.playOneTurn();
             console.clear();
             console.log(Graphics.banner);
@@ -156,9 +166,10 @@ class Game {
 
     public endScreen(): string {
         return "The game has ended\n"
-            + addBorder(this.boardLine() + "\n" + this.historyLine()) // shows board and history
+            + Graphics.addBorder(this.boardLine() + "\n" + this.historyLine()) // shows board and history
             + "\nRanking:\n" + this.rankingLines(); // shows ranking
     }
 }
 
 export default Game;
+export { CHOICES, Event, Range };

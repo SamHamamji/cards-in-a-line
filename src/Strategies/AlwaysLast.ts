@@ -1,4 +1,4 @@
-import { CHOICES } from "../Constants";
+import { CHOICES } from "../Game";
 import Strategy from "../Strategy";
 
 class AlwaysLast implements Strategy {

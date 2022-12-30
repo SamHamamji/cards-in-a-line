@@ -1,4 +1,4 @@
-import Graphics from "../Graphics/index";
+import Graphics from "../Graphics";
 import { GameSettings } from "./GameSettings";
 
 class GameRunner {
