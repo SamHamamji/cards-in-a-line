@@ -1,11 +1,13 @@
 enum ActionType {
     AddBot = "AddBot",
     AddHuman = "AddHuman",
+    EditPlayer = "EditPlayer",
+    EditColor = "EditColor",
     EditName = "EditName",
     EditStrategy = "EditStrategy",
-    EditColor = "EditColor",
     DeletePlayer = "DeletePlayer",
-    EditPlayer = "EditPlayer",
+    EditCardNumber = "EditCardNumber",
+    // GiveCustomCards = "GiveCustomCards",
     GoHome = "GoHome",
     Start = "Start"
 }
