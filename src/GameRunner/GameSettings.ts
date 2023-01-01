@@ -184,14 +184,19 @@ class GameSettings {
             type: "number",
             name: "cardNumber",
             message: "Enter new card number",
-            validate(_, answers) {
-                if (answers === undefined)
-                    return "(UNDEFINED) Enter something";
-                if (Number.isNaN(answers.cardNumber))
-                    return "Error";
-                if (answers.cardNumber <= 0)
-                    return "Enter a positive value";
+            validate(cardNumber: number) {
+                if (!cardNumber || cardNumber <= 0)
+                    return "Enter a positive integer";
                 return true;
+            },
+            filter(cardNumber: number) {
+                if (Number.isNaN(cardNumber))
+                    return "";
+                if (!Number.isInteger(cardNumber))
+                    return "";
+                if (cardNumber <= 0)
+                    return "";
+                return cardNumber;
             },
         });
         this.cardNumber = input.cardNumber;
