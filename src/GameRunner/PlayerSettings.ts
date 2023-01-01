@@ -1,6 +1,6 @@
 import colors from "colors/safe";
 import Player from "../Player";
-import Strategies, { StrategyName } from "../Strategies/index";
+import Strategies, { StrategyName } from "../Strategies";
 
 type PlayerColor = typeof PlayerSettings.playerColors[number];
 

@@ -2,15 +2,15 @@
 
 import colors from "colors/safe";
 import Game from "../Game";
-import Graphics from "../Graphics";
 import Player from "../Player";
-import Strategies, { StrategyName } from "../Strategies/index";
+import Strategies, { StrategyName } from "../Strategies";
+import TUI from "../TUI";
 import { Action, ActionType } from "./Action";
 import CardGenerator from "./CardGenerator";
 import PlayerSettings, { PlayerColor } from "./PlayerSettings";
 const inquirerPromise = import("inquirer");
 
-export class GameSettings {
+class GameSettings {
     players: PlayerSettings[];
     cardsNumber: number;
     timeDelay = 1000;
@@ -38,9 +38,8 @@ export class GameSettings {
     async setup() {
         let currentAction: Action | null = { type: ActionType.GoHome };
         do {
+            TUI.clearScreen();
             currentAction = await this[currentAction.type](currentAction);
-            console.clear();
-            console.log(Graphics.banner);
         } while (currentAction !== null);
     }
 
@@ -75,7 +74,6 @@ export class GameSettings {
                     },
                 ];
             },
-            loop: false,
             pageSize: Number.MAX_SAFE_INTEGER,
         });
         return input.action;
@@ -133,7 +131,6 @@ export class GameSettings {
                 name: "Home",
                 value: { type: ActionType.GoHome }
             }] as ({ name: string, value: Action })[],
-            loop: false,
             pageSize: Number.MAX_SAFE_INTEGER,
         });
         return input.action;
@@ -192,7 +189,6 @@ export class GameSettings {
                     value: this.players[action.playerIndex!].strategy,
                 },
             ],
-            loop: false,
             pageSize: Number.MAX_SAFE_INTEGER,
         });
 
@@ -218,7 +214,6 @@ export class GameSettings {
                     value: this.players[action.playerIndex!].color,
                 },
             ],
-            loop: false,
             pageSize: Number.MAX_SAFE_INTEGER,
         });
 
@@ -260,3 +255,5 @@ export class GameSettings {
         return input.choice;
     }
 }
+
+export default GameSettings;

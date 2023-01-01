@@ -1,8 +1,5 @@
-import colors from "colors/safe";
 import Card from "./Card";
 import Player from "./Player";
-import UserInput from "./Strategies/UserInput";
-import Graphics from "./Graphics";
 
 enum CHOICES { FIRST, LAST }
 
@@ -44,19 +41,7 @@ class Game {
 
     get currentPlayer() { return this.players[this.currentPlayerIndex]; }
 
-    public async play(timeDelay: number) {
-        while (!this.isOver()) {
-            console.log(colors.bold("Scores: ") + this.scoreLine());
-            console.log(Graphics.addBorder(this.boardLine() + "\n" + this.arrowLine()));
-            if (!(this.currentPlayer.strategy instanceof UserInput))
-                await new Promise(resolve => setTimeout(resolve, timeDelay));
-            await this.playOneTurn();
-            console.clear();
-            console.log(Graphics.banner);
-        }
-    }
-
-    private async playOneTurn() {
+    async playOneRound() {
         const choice = await this.currentPlayer.strategy.choice(this);
         const pickedCardIndex = this.pickCard(choice);
         this.updateScore(pickedCardIndex);
@@ -118,56 +103,6 @@ class Game {
             }
         }
         return answer;
-    }
-
-    private boardLine(): string {
-        const boardRepr = new Array(this.cardsNumber).fill("   ");
-        this.history.forEach(event => {
-            boardRepr[event.pickedCardIndex] = this.players[event.playerIndex].colorize(event.pickedCard.toString());
-        });
-        for (let index = this.range.first; index <= this.range.last; index++) {
-            boardRepr[index] = colors.dim(this.board[index].toString());
-        }
-        if (!this.isOver()) {
-            [this.range.first, this.range.last].forEach(index => {
-                boardRepr[index] = colors.bold(this.board[index].toString());
-            });
-        }
-        return boardRepr.join(" ");
-    }
-
-    private scoreLine() {
-        return this.players.map((player, index) => `${player.colorizedName}: ${this.scores[index]}`).join(" | ");
-    }
-
-    private arrowLine() {
-        if (this.history.length === 0) {
-            return "";
-        }
-        const currentEvent = this.history[this.history.length - 1];
-        return " ".repeat(4 * currentEvent.pickedCardIndex + 1) + this.players[currentEvent.playerIndex].colorize(colors.bold("^"));
-    }
-
-    private historyLine() {
-        const historyRepr = new Array(this.cardsNumber).fill("   ");
-        this.history.forEach((element, time) => {
-            historyRepr[element.pickedCardIndex] = ` ${(time + 1).toString().padEnd(2, " ")}`;
-        });
-        return colors.dim(historyRepr.join(" "));
-    }
-
-    private rankingLines(): string {
-        return this.ranking().map((array, index) =>
-            array.map((element) =>
-                `${index + 1}. ${element.player.colorizedName} (${element.player.strategy.name}): ${element.score}`
-            ).join("\n")
-        ).join("\n");
-    }
-
-    public endScreen(): string {
-        return "The game has ended\n"
-            + Graphics.addBorder(this.boardLine() + "\n" + this.historyLine()) // shows board and history
-            + "\nRanking:\n" + this.rankingLines(); // shows ranking
     }
 }
 

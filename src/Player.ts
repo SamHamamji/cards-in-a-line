@@ -1,4 +1,5 @@
 import Strategy from "./Strategy";
+import UserInput from "./Strategies/UserInput";
 
 type ColorFunction = (str: string) => string;
 
@@ -17,6 +18,9 @@ class Player {
         return this.colorize(this.name);
     }
 
+    isUser() {
+        return this.strategy instanceof UserInput;
+    }
 }
 
 export default Player;

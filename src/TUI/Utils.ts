@@ -1,8 +1,11 @@
 import fs from "fs";
 import { bold } from "colors/safe";
+import path from "path";
+
+const bannerPath = "./banner.txt";
 
 const banner = bold(fs.readFileSync(
-    "./src/Graphics/banner.txt",
+    path.join(__dirname, bannerPath),
     { encoding: "utf-8", flag: "r" }
 ));
 
@@ -65,5 +68,4 @@ function addBorder(str: string, border: Border = BORDERS.ROUND): string {
         bottomLine;
 }
 
-
-export default { banner, decolorize, addBorder };
+export { banner, addBorder };
