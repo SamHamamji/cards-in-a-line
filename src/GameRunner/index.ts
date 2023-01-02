@@ -12,6 +12,7 @@ class GameRunner {
     }
 
     async setup() {
+        await TUI.printStartScreen();
         await this.settings.setup();
     }
 

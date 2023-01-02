@@ -1,6 +1,6 @@
 import Game from "../Game";
-import colors from "colors";
-import { addBorder, banner } from "./Utils";
+import colors from "colors/safe";
+import { addBorder, banner, centerText } from "./Utils";
 import readline from "readline";
 
 class Component {
@@ -54,18 +54,22 @@ class Component {
 
 function clearScreen() {
     console.clear();
-    console.log(banner);
+    console.log(colors.bold(banner));
 }
 
-function printStartScreen() {
+async function printStartScreen() {
     clearScreen();
-    console.log("Press enter to start the game");
+    const prompt = centerText("Press enter to start the game");
+    console.log(colors.blue(prompt));
 
     const inputListener = readline.createInterface({
         input: process.stdin,
     });
-    inputListener.on("line", () => {
-        inputListener.close();
+    await new Promise<void>(resolve => {
+        inputListener.on("line", () => {
+            inputListener.close();
+            resolve();
+        });
     });
 }
 

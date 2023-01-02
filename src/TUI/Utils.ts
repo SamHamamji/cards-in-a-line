@@ -1,13 +1,12 @@
 import fs from "fs";
-import { bold } from "colors/safe";
 import path from "path";
 
 const bannerPath = "./banner.txt";
 
-const banner = bold(fs.readFileSync(
+const banner = fs.readFileSync(
     path.join(__dirname, bannerPath),
     { encoding: "utf-8", flag: "r" }
-));
+);
 
 interface Border {
     top: string;
@@ -43,6 +42,14 @@ const BORDERS = {
     }
 };
 
+function centerText(str: string): string {
+    const center = banner.split("\n").map(line =>
+        line.length
+    ).reduce((a, b) => Math.max(a, b), Number.MIN_SAFE_INTEGER) / 2;
+    const leftIndex = Math.max(0, center - (str.length / 2));
+    return " ".repeat(leftIndex) + str;
+}
+
 function decolorize(str: string): string {
     // eslint-disable-next-line no-control-regex
     return str.replace(/\u001b\[.*?m/g, "");
@@ -68,4 +75,4 @@ function addBorder(str: string, border: Border = BORDERS.ROUND): string {
         bottomLine;
 }
 
-export { banner, addBorder };
+export { addBorder, banner, centerText };
