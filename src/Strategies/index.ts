@@ -1,17 +1,19 @@
 import AlwaysFirst from "./AlwaysFirst";
 import AlwaysLast from "./AlwaysLast";
+import ChooseMaximum from "./ChooseMaximum";
+import Clone from "./Clone";
+import Minimax from "./Minimax";
 import Random from "./Random";
 import UserInput from "./UserInput";
-import ChooseMaximum from "./ChooseMaximum";
-import Minimax from "./Minimax";
 
 const Strategies = {
     AlwaysFirst,
     AlwaysLast,
+    ChooseMaximum,
+    Clone,
+    Minimax,
     Random,
     UserInput,
-    ChooseMaximum,
-    Minimax,
 };
 
 export type StrategyName = keyof typeof Strategies

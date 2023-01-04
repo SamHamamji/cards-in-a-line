@@ -13,7 +13,7 @@ const inquirerPromise = import("inquirer");
 class GameSettings {
     players: PlayerSettings[];
     cardNumber: number;
-    timeDelay = 1000;
+    timeDelay = 500;
 
     static readonly defaultPlayerNumber = 2;
     static readonly defaultCardNumber = 12;
