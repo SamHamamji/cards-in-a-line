@@ -1,7 +1,6 @@
 import Game from "../Game";
 import colors from "colors/safe";
-import { addBorder, banner, centerText } from "./Utils";
-import readline from "readline";
+import Utils from "./Utils";
 
 class Component {
     static boardLine(game: Game) {
@@ -54,35 +53,26 @@ class Component {
 
 function clearScreen() {
     console.clear();
-    console.log(colors.bold(banner));
+    console.log(colors.bold(Utils.banner));
 }
 
 async function printStartScreen() {
     clearScreen();
-    const prompt = centerText("Press enter to start the game");
+    const prompt = Utils.centerText("Press enter to start the game");
     console.log(colors.blue(prompt));
-
-    const inputListener = readline.createInterface({
-        input: process.stdin,
-    });
-    await new Promise<void>(resolve => {
-        inputListener.on("line", () => {
-            inputListener.close();
-            resolve();
-        });
-    });
+    await Utils.waitForEnter();
 }
 
 function printRoundScreen(game: Game) {
     clearScreen();
     console.log(colors.bold("Scores: ") + Component.scoresLine(game));
-    console.log(addBorder(Component.boardLine(game) + "\n" + Component.arrowLine(game)));
+    console.log(Utils.addBorder(Component.boardLine(game) + "\n" + Component.arrowLine(game)));
 }
 
 function printEndScreen(game: Game) {
     clearScreen();
 
-    const boardScreen = addBorder(
+    const boardScreen = Utils.addBorder(
         Component.boardLine(game) + "\n" +
         Component.historyLine(game)
     );
@@ -100,4 +90,5 @@ export default {
     printStartScreen,
     printRoundScreen,
     printEndScreen,
+    Utils,
 };

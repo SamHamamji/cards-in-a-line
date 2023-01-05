@@ -1,15 +1,18 @@
 enum ActionType {
     AddBot = "AddBot",
     AddHuman = "AddHuman",
-    EditPlayer = "EditPlayer",
-    EditColor = "EditColor",
-    EditName = "EditName",
-    EditStrategy = "EditStrategy",
     DeletePlayer = "DeletePlayer",
     EditCardNumber = "EditCardNumber",
-    // GiveCustomCards = "GiveCustomCards",
+    EditColor = "EditColor",
+    EditName = "EditName",
+    EditPlayer = "EditPlayer",
+    EditStrategy = "EditStrategy",
+    EndScreen = "EndScreen",
+    Exit = "Exit",
     GoHome = "GoHome",
-    Start = "Start"
+    RunGame = "RunGame",
+    StartGame = "StartGame",
+    StartScreen = "StartScreen",
 }
 
 type ActionNeedingPlayer = ActionType.EditPlayer | ActionType.EditName |
@@ -23,4 +26,4 @@ type Action = {
     playerIndex: number;
 };
 
-export { Action, ActionType, ActionNeedingPlayer };
+export { Action, ActionType };

@@ -1,5 +1,8 @@
+import colors from "colors/safe";
 import fs from "fs";
 import path from "path";
+import readline from "readline";
+const inquirerPromise = import("inquirer");
 
 const bannerPath = "./banner.txt";
 
@@ -50,6 +53,11 @@ function centerText(str: string): string {
     return " ".repeat(leftIndex) + str;
 }
 
+async function getSeparator() {
+    const separatorString = colors.gray("──────────────");
+    return new (await inquirerPromise).default.Separator(separatorString);
+}
+
 function decolorize(str: string): string {
     // eslint-disable-next-line no-control-regex
     return str.replace(/\u001b\[.*?m/g, "");
@@ -75,4 +83,34 @@ function addBorder(str: string, border: Border = BORDERS.ROUND): string {
         bottomLine;
 }
 
-export { addBorder, banner, centerText };
+async function waitForEnter() {
+    const inputListener = readline.createInterface({
+        input: process.stdin,
+    });
+    await new Promise<void>(resolve => {
+        inputListener.on("line", () => {
+            inputListener.close();
+            resolve();
+        });
+    });
+}
+
+async function confirm(prompt: string) {
+    const inquirer = (await inquirerPromise).default;
+    const input = await inquirer.prompt<{ confirmed: boolean; }>({
+        type: "confirm",
+        name: "confirmed",
+        message: prompt,
+        default: true,
+    });
+    return input.confirmed;
+}
+
+export default {
+    addBorder,
+    banner,
+    centerText,
+    createSeparator: getSeparator,
+    confirm,
+    waitForEnter
+};
