@@ -1,6 +1,7 @@
 enum ActionType {
     AddBot = "AddBot",
     AddHuman = "AddHuman",
+    AskPlayAgain = "AskPlayAgain",
     DeletePlayer = "DeletePlayer",
     EditCardNumber = "EditCardNumber",
     EditColor = "EditColor",
@@ -9,8 +10,10 @@ enum ActionType {
     EditStrategy = "EditStrategy",
     EndScreen = "EndScreen",
     Exit = "Exit",
-    GoHome = "GoHome",
+    EditSettings = "EditSettings",
+    Home = "Home",
     RunGame = "RunGame",
+    SetupSettings = "SetupSettings",
     StartGame = "StartGame",
     StartScreen = "StartScreen",
 }

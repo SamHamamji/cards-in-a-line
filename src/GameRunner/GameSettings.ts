@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 import colors from "colors/safe";
 import Game from "../Game";
 import Player from "../Player";
@@ -7,14 +5,17 @@ import Strategies, { StrategyName } from "../Strategies";
 import TUI from "../TUI/index";
 import { Action, ActionType } from "./Action";
 import CardGenerator from "./CardGenerator";
+import { GameType, setupGameByType } from "./GameType";
 import PlayerSettings, { PlayerColor } from "./PlayerSettings";
 const inquirerPromise = import("inquirer");
 
-class GameSettings {
+export class GameSettings {
     players: PlayerSettings[];
     cardNumber: number;
     timeDelay = 500;
+    gameType: GameType | null;
 
+    static readonly defaultStrategyName: StrategyName = "Minimax";
     static readonly defaultPlayerNumber = 2;
     static readonly defaultCardNumber = 12;
     static readonly maxPlayerNameLength = 16;
@@ -29,10 +30,8 @@ class GameSettings {
 
     constructor() {
         this.players = [];
-        for (let i = 0; i < GameSettings.defaultPlayerNumber; i++) {
-            this.AddHuman();
-        }
         this.cardNumber = GameSettings.defaultCardNumber;
+        this.gameType = null;
     }
 
     [ActionType.AddHuman]() {
@@ -47,7 +46,7 @@ class GameSettings {
     [ActionType.AddBot]() {
         const player = new PlayerSettings(
             `Bot ${this.botPlayers + 1}`,
-            "AlwaysFirst",
+            GameSettings.defaultStrategyName,
             this.getNextColor(),
         );
         this.players.push(player);
@@ -59,7 +58,7 @@ class GameSettings {
 
     [ActionType.DeletePlayer](action: Action): Action {
         this.players.splice(action.playerIndex!, 1);
-        return { type: ActionType.GoHome };
+        return { type: ActionType.EditSettings };
     }
 
     async [ActionType.EditCardNumber](): Promise<Action> {
@@ -84,7 +83,7 @@ class GameSettings {
             },
         });
         this.cardNumber = input.cardNumber;
-        return { type: ActionType.GoHome };
+        return { type: ActionType.EditSettings };
     }
 
     async [ActionType.EditPlayer](action: Action): Promise<Action> {
@@ -104,13 +103,13 @@ class GameSettings {
                 name: `Edit strategy: (${player.strategy})`,
                 value: { type: ActionType.EditStrategy, playerIndex: action.playerIndex }
             },
-            await TUI.Utils.createSeparator(),
+            await TUI.Utils.getSeparator(),
             {
                 name: "Delete player",
                 value: { type: ActionType.DeletePlayer, playerIndex: action.playerIndex }
             }, {
                 name: "Home",
-                value: { type: ActionType.GoHome }
+                value: { type: ActionType.EditSettings }
             }] as ({ name: string, value: Action })[],
             pageSize: Number.MAX_SAFE_INTEGER,
         });
@@ -128,7 +127,7 @@ class GameSettings {
                     name: colors[color](color),
                     value: color,
                 })),
-                await TUI.Utils.createSeparator(),
+                await TUI.Utils.getSeparator(),
                 {
                     name: "Cancel",
                     value: this.players[action.playerIndex!].color,
@@ -176,7 +175,7 @@ class GameSettings {
                     name: strategyName,
                     value: strategyName,
                 })),
-                await TUI.Utils.createSeparator(),
+                await TUI.Utils.getSeparator(),
                 {
                     name: "Cancel",
                     value: this.players[action.playerIndex!].strategy,
@@ -190,20 +189,33 @@ class GameSettings {
         return { type: ActionType.EditPlayer, playerIndex: action.playerIndex! };
     }
 
-    async [ActionType.GoHome](): Promise<Action> {
+    async [ActionType.EditSettings](): Promise<Action> {
         const inquirer = (await inquirerPromise).default;
-        const choices = await this.homeChoices();
+        const choices = await this.settingChoices();
         const input = await inquirer.prompt<{ action: Action; }>({
             type: "list",
             name: "action",
-            message: "Setup the game",
+            message: "Settings",
             choices: choices,
             pageSize: Number.MAX_SAFE_INTEGER,
         });
         return input.action;
     }
 
-    private async homeChoices() {
+    [ActionType.SetupSettings](): Action {
+        if (this.gameType === null)
+            throw new Error("gameType is not initialized");
+
+        setupGameByType[this.gameType](this);
+
+        return {
+            type: (this.gameType === GameType.Custom) ?
+                ActionType.EditSettings :
+                ActionType.StartGame
+        };
+    }
+
+    private async settingChoices() {
         const playerChoices = this.players.map((player, index) => ({
             name: `Select ${player.colorFunction(player.name)}`,
             value: { type: ActionType.EditPlayer, playerIndex: index }
@@ -219,14 +231,14 @@ class GameSettings {
             return addChoices;
         return [
             ...playerChoices,
-            await TUI.Utils.createSeparator(),
+            await TUI.Utils.getSeparator(),
             ...addChoices,
-            await TUI.Utils.createSeparator(),
+            await TUI.Utils.getSeparator(),
             {
                 name: `Edit card number (${this.cardNumber})`,
                 value: { type: ActionType.EditCardNumber }
             },
-            await TUI.Utils.createSeparator(),
+            await TUI.Utils.getSeparator(),
             {
                 name: "Start",
                 value: { type: ActionType.StartGame }
@@ -248,3 +260,4 @@ class GameSettings {
 }
 
 export default GameSettings;
+export { GameType };

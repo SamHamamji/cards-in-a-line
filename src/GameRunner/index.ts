@@ -1,4 +1,5 @@
 import GameSettings from "./GameSettings";
+import { GameType } from "./GameType";
 import Game from "../Game";
 import TUI from "../TUI";
 import { Action, ActionType } from "./Action";
@@ -25,12 +26,12 @@ class GameRunner {
 
     private [ActionType.AddBot](): Action {
         this.settings.AddBot();
-        return { type: ActionType.GoHome };
+        return { type: ActionType.EditSettings };
     }
 
     private [ActionType.AddHuman](): Action {
         this.settings.AddHuman();
-        return { type: ActionType.GoHome };
+        return { type: ActionType.EditSettings };
     }
 
     private async [ActionType.EditPlayer](action: Action): Promise<Action> {
@@ -57,13 +58,30 @@ class GameRunner {
         return await this.settings.EditCardNumber();
     }
 
-    private async [ActionType.GoHome](): Promise<Action> {
-        return await this.settings.GoHome();
+    private async [ActionType.EditSettings](): Promise<Action> {
+        return await this.settings.EditSettings();
     }
 
-    private async [ActionType.StartScreen](): Promise<Action> {
-        await TUI.printStartScreen();
-        return { type: ActionType.GoHome };
+    private async [ActionType.Home](): Promise<Action> {
+        const inquirer = (await inquirerPromise).default;
+        const input = await inquirer.prompt<{ gameType: GameType }>({
+            type: "list",
+            name: "gameType",
+            message: "Select game type",
+            choices: [{
+                name: "Single Player",
+                value: GameType.SinglePlayer
+            }, {
+                name: "MultiPlayer",
+                value: GameType.MultiPlayer
+            }, {
+                name: "Custom",
+                value: GameType.Custom
+            }],
+            pageSize: Number.MAX_SAFE_INTEGER,
+        });
+        this.settings.gameType = input.gameType;
+        return { type: ActionType.SetupSettings };
     }
 
     private async [ActionType.RunGame](): Promise<Action> {
@@ -72,24 +90,50 @@ class GameRunner {
         return { type: ActionType.EndScreen };
     }
 
+    private [ActionType.SetupSettings](): Action {
+        return this.settings.SetupSettings();
+    }
+
     private async [ActionType.StartGame](): Promise<Action> {
         if (!await TUI.Utils.confirm("Start game?"))
-            return { type: ActionType.GoHome };
+            return { type: ActionType.Home };
         return { type: ActionType.RunGame };
     }
 
+    private async [ActionType.StartScreen](): Promise<Action> {
+        await TUI.showStartScreen();
+        return { type: ActionType.Home };
+    }
+
     private async [ActionType.EndScreen](): Promise<Action> {
-        TUI.printEndScreen(this.game!);
-        if (await this.askPlayAgain())
-            return { type: ActionType.RunGame };
-        else
-            return { type: ActionType.Exit };
+        await TUI.showEndScreen(this.game!);
+        return { type: ActionType.AskPlayAgain };
+    }
+
+    async [ActionType.AskPlayAgain](): Promise<Action> {
+        const inquirer = (await inquirerPromise).default;
+        const input = await inquirer.prompt<{ action: Action; }>({
+            type: "list",
+            name: "action",
+            message: "Select an action:",
+            choices: [{
+                name: "Play again",
+                value: { type: ActionType.RunGame },
+            }, {
+                name: "Home",
+                value: { type: ActionType.Home },
+            }, {
+                name: "Exit",
+                value: { type: ActionType.Exit },
+            }],
+        });
+        return input.action;
     }
 
     private async [ActionType.Exit](): Promise<Action | null> {
         const confirmation = await TUI.Utils.confirm("Are you sure you want to exit?");
         if (!confirmation)
-            return { type: ActionType.EndScreen };
+            return { type: ActionType.AskPlayAgain };
         return null;
     }
 
@@ -103,16 +147,6 @@ class GameRunner {
                 await new Promise(resolve => setTimeout(resolve, timeDelay));
             await this.game.playOneRound();
         }
-    }
-
-    async askPlayAgain() {
-        const inquirer = (await inquirerPromise).default;
-        const input = await inquirer.prompt<{ choice: boolean; }>({
-            type: "confirm",
-            name: "choice",
-            message: "Play again?",
-        });
-        return input.choice;
     }
 }
 

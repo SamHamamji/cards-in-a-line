@@ -49,7 +49,7 @@ function centerText(str: string): string {
     const center = banner.split("\n").map(line =>
         line.length
     ).reduce((a, b) => Math.max(a, b), Number.MIN_SAFE_INTEGER) / 2;
-    const leftIndex = Math.max(0, center - (str.length / 2));
+    const leftIndex = Math.max(0, center - (decolorize(str).length / 2));
     return " ".repeat(leftIndex) + str;
 }
 
@@ -110,7 +110,7 @@ export default {
     addBorder,
     banner,
     centerText,
-    createSeparator: getSeparator,
+    getSeparator,
     confirm,
     waitForEnter
 };

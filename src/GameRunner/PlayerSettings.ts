@@ -11,11 +11,11 @@ class PlayerSettings {
 
     static readonly playerColors = [
         "red",
+        "green",
         "blue",
         "yellow",
-        "green",
-        "cyan",
         "magenta",
+        "cyan",
     ] as const;
 
     constructor(name: string, strategy: StrategyName, color: PlayerColor) {

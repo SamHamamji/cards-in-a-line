@@ -56,39 +56,46 @@ function clearScreen() {
     console.log(colors.bold(Utils.banner));
 }
 
-async function printStartScreen() {
+async function showStartScreen() {
     clearScreen();
-    const prompt = Utils.centerText("Press enter to start the game");
-    console.log(colors.blue(prompt));
+    const message = colors.blue("Press enter to start the game");
+    console.log(Utils.centerText(message));
     await Utils.waitForEnter();
 }
 
 function printRoundScreen(game: Game) {
     clearScreen();
-    console.log(colors.bold("Scores: ") + Component.scoresLine(game));
-    console.log(Utils.addBorder(Component.boardLine(game) + "\n" + Component.arrowLine(game)));
+    const scores = colors.bold("Scores: ") + Component.scoresLine(game);
+    const board = Component.boardLine(game);
+    const arrow = Component.arrowLine(game);
+    console.log([
+        scores,
+        Utils.addBorder([board, arrow].join("\n")),
+    ].join("\n"));
 }
 
-function printEndScreen(game: Game) {
+async function showEndScreen(game: Game) {
     clearScreen();
 
     const boardScreen = Utils.addBorder(
         Component.boardLine(game) + "\n" +
         Component.historyLine(game)
     );
-    const output = [
+
+    console.log([
         "The game has ended",
         boardScreen,
         Component.rankingLines(game)
-    ].join("\n");
+    ].join("\n"));
 
-    console.log(output);
+    console.log(colors.blue("Press enter to continue"));
+    await Utils.waitForEnter();
 }
 
 export default {
     clearScreen,
-    printStartScreen,
+    showStartScreen,
     printRoundScreen,
-    printEndScreen,
+    showEndScreen,
     Utils,
 };
