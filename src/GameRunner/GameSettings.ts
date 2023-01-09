@@ -12,11 +12,12 @@ const inquirerPromise = import("inquirer");
 export class GameSettings {
     players: PlayerSettings[];
     cardNumber: number;
-    timeDelay = 500;
+    timeDelay: number;
     gameType: GameType | null;
 
-    static readonly defaultStrategyName: StrategyName = "Minimax";
     static readonly defaultPlayerNumber = 2;
+    static readonly defaultStrategyName: StrategyName = "Minimax";
+    static readonly defaultTimeDelay = 500;
     static readonly defaultCardNumber = 12;
     static readonly maxPlayerNameLength = 16;
 
@@ -31,6 +32,7 @@ export class GameSettings {
     constructor() {
         this.players = [];
         this.cardNumber = GameSettings.defaultCardNumber;
+        this.timeDelay = GameSettings.defaultTimeDelay;
         this.gameType = null;
     }
 
@@ -62,27 +64,10 @@ export class GameSettings {
     }
 
     async [ActionType.EditCardNumber](): Promise<Action> {
-        const inquirer = (await inquirerPromise).default;
-        const input = await inquirer.prompt<{ cardNumber: number; }>({
-            type: "number",
-            name: "cardNumber",
-            message: "Enter new card number",
-            validate(cardNumber: number) {
-                if (!cardNumber || cardNumber <= 0)
-                    return "Enter a positive integer";
-                return true;
-            },
-            filter(cardNumber: number) {
-                if (Number.isNaN(cardNumber))
-                    return "";
-                if (!Number.isInteger(cardNumber))
-                    return "";
-                if (cardNumber <= 0)
-                    return "";
-                return cardNumber;
-            },
-        });
-        this.cardNumber = input.cardNumber;
+        this.cardNumber = await TUI.Utils.promptForInteger(
+            "Enter the new card number",
+            false,
+        );
         return { type: ActionType.EditSettings };
     }
 
@@ -201,6 +186,14 @@ export class GameSettings {
         return input.action;
     }
 
+    async [ActionType.EditTimeDelay](): Promise<Action> {
+        this.timeDelay = await TUI.Utils.promptForInteger(
+            "Enter the new time delay in milliseconds",
+            true,
+        );
+        return { type: ActionType.EditSettings };
+    }
+
     [ActionType.SetupSettings](): Action {
         if (this.gameType === null)
             throw new Error("gameType is not initialized");
@@ -231,6 +224,9 @@ export class GameSettings {
         const otherSettingChoices = [{
             name: `Edit card number (${this.cardNumber})`,
             value: { type: ActionType.EditCardNumber }
+        }, {
+            name: `Edit time delay (${this.timeDelay} ms)`,
+            value: { type: ActionType.EditTimeDelay }
         }];
 
         const generalChoices = [...(this.canCreateGame() ? [{

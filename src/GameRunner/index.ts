@@ -63,6 +63,10 @@ class GameRunner {
         return await this.settings.EditStrategy(action);
     }
 
+    private async [ActionType.EditTimeDelay](): Promise<Action> {
+        return this.settings.EditTimeDelay();
+    }
+
     private [ActionType.DeletePlayer](action: Action): Action {
         return this.settings.DeletePlayer(action);
     }

@@ -69,7 +69,6 @@ async function getTextSeparator(text: string, isCentered = false) {
     );
 }
 
-
 function decolorize(str: string): string {
     // eslint-disable-next-line no-control-regex
     return str.replace(/\u001b\[.*?m/g, "");
@@ -118,12 +117,39 @@ async function confirm(prompt: string) {
     return input.confirmed;
 }
 
+async function promptForInteger(prompt: string, acceptsZero = true) {
+    const inquirer = (await inquirerPromise).default;
+    const input = await inquirer.prompt<{ num: number; }>({
+        type: "number",
+        name: "num",
+        message: prompt,
+        validate(num: number) {
+            if (!num || num <= 0)
+                return "Enter a positive integer";
+            return true;
+        },
+        filter: (num: number) => {
+            if (Number.isNaN(num))
+                return "";
+            if (!Number.isInteger(num))
+                return "";
+            if (num < 0)
+                return "";
+            if (num == 0 && !acceptsZero)
+                return "";
+            return num;
+        },
+    });
+    return input.num;
+}
+
 export default {
     addBorder,
     banner,
     centerText,
+    confirm,
     getLineSeparator,
     getTextSeparator,
-    confirm,
-    waitForEnter
+    promptForInteger,
+    waitForEnter,
 };

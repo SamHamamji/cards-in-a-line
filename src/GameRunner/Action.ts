@@ -8,6 +8,7 @@ enum ActionType {
     EditName = "EditName",
     EditPlayer = "EditPlayer",
     EditStrategy = "EditStrategy",
+    EditTimeDelay = "EditTimeDelay",
     EndScreen = "EndScreen",
     Exit = "Exit",
     EditSettings = "EditSettings",
