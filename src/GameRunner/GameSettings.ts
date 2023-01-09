@@ -103,12 +103,12 @@ export class GameSettings {
                 name: `Edit strategy: (${player.strategy})`,
                 value: { type: ActionType.EditStrategy, playerIndex: action.playerIndex }
             },
-            await TUI.Utils.getSeparator(),
+            await TUI.Utils.getLineSeparator(),
             {
                 name: "Delete player",
                 value: { type: ActionType.DeletePlayer, playerIndex: action.playerIndex }
             }, {
-                name: "Home",
+                name: "Save",
                 value: { type: ActionType.EditSettings }
             }] as ({ name: string, value: Action })[],
             pageSize: Number.MAX_SAFE_INTEGER,
@@ -127,7 +127,7 @@ export class GameSettings {
                     name: colors[color](color),
                     value: color,
                 })),
-                await TUI.Utils.getSeparator(),
+                await TUI.Utils.getLineSeparator(),
                 {
                     name: "Cancel",
                     value: this.players[action.playerIndex!].color,
@@ -175,7 +175,7 @@ export class GameSettings {
                     name: strategyName,
                     value: strategyName,
                 })),
-                await TUI.Utils.getSeparator(),
+                await TUI.Utils.getLineSeparator(),
                 {
                     name: "Cancel",
                     value: this.players[action.playerIndex!].strategy,
@@ -191,12 +191,11 @@ export class GameSettings {
 
     async [ActionType.EditSettings](): Promise<Action> {
         const inquirer = (await inquirerPromise).default;
-        const choices = await this.settingChoices();
         const input = await inquirer.prompt<{ action: Action; }>({
             type: "list",
             name: "action",
             message: "Settings",
-            choices: choices,
+            choices: await this.settingsChoices(),
             pageSize: Number.MAX_SAFE_INTEGER,
         });
         return input.action;
@@ -215,35 +214,48 @@ export class GameSettings {
         };
     }
 
-    private async settingChoices() {
-        const playerChoices = this.players.map((player, index) => ({
+    private async settingsChoices() {
+        const editPlayerChoices = this.players.map((player, index) => ({
             name: `Select ${player.colorFunction(player.name)}`,
             value: { type: ActionType.EditPlayer, playerIndex: index }
         }));
-        const addChoices = [{
+
+        const addingPlayerChoices = [{
             name: "Add Human",
             value: { type: ActionType.AddHuman }
         }, {
             name: "Add Bot",
             value: { type: ActionType.AddBot }
         }];
-        if (playerChoices.length === 0)
-            return addChoices;
+
+        const otherSettingChoices = [{
+            name: `Edit card number (${this.cardNumber})`,
+            value: { type: ActionType.EditCardNumber }
+        }];
+
+        const generalChoices = [...(this.canCreateGame() ? [{
+            name: "Start",
+            value: { type: ActionType.StartGame }
+        }] : [await TUI.Utils.getTextSeparator("Start")]), {
+            name: "Cancel",
+            value: { type: ActionType.Home }
+        }];
+
         return [
-            ...playerChoices,
-            await TUI.Utils.getSeparator(),
-            ...addChoices,
-            await TUI.Utils.getSeparator(),
-            {
-                name: `Edit card number (${this.cardNumber})`,
-                value: { type: ActionType.EditCardNumber }
-            },
-            await TUI.Utils.getSeparator(),
-            {
-                name: "Start",
-                value: { type: ActionType.StartGame }
-            },
+            ...(editPlayerChoices.length !== 0 ? [
+                ...editPlayerChoices,
+                await TUI.Utils.getLineSeparator(),
+            ] : []),
+            ...addingPlayerChoices,
+            await TUI.Utils.getLineSeparator(),
+            ...otherSettingChoices,
+            await TUI.Utils.getLineSeparator(),
+            ...generalChoices,
         ];
+    }
+
+    private canCreateGame() {
+        return this.players.length > 1;
     }
 
     createGame(): Game {

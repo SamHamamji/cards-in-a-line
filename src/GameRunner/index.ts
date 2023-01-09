@@ -10,6 +10,19 @@ class GameRunner {
     private game: Game | null;
     private currentAction: Action | null;
 
+    private static readonly homeChoices = [
+        {
+            name: TUI.Utils.centerText("🃍  Single Player  🃍"),
+            value: GameType.SinglePlayer
+        }, {
+            name: TUI.Utils.centerText("🃓   MultiPlayer   🃓"),
+            value: GameType.MultiPlayer
+        }, {
+            name: TUI.Utils.centerText("🂸   Custom game   🂸"),
+            value: GameType.Custom
+        }
+    ] as const;
+
     constructor() {
         this.settings = new GameSettings();
         this.currentAction = null;
@@ -68,16 +81,7 @@ class GameRunner {
             type: "list",
             name: "gameType",
             message: "Select game type",
-            choices: [{
-                name: "Single Player",
-                value: GameType.SinglePlayer
-            }, {
-                name: "MultiPlayer",
-                value: GameType.MultiPlayer
-            }, {
-                name: "Custom",
-                value: GameType.Custom
-            }],
+            choices: GameRunner.homeChoices,
             pageSize: Number.MAX_SAFE_INTEGER,
         });
         this.settings.gameType = input.gameType;

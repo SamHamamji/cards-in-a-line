@@ -53,10 +53,22 @@ function centerText(str: string): string {
     return " ".repeat(leftIndex) + str;
 }
 
-async function getSeparator() {
-    const separatorString = colors.gray("──────────────");
-    return new (await inquirerPromise).default.Separator(separatorString);
+const separatorSymbol = "─";
+
+async function getLineSeparator(isCentered = false, length = 14) {
+    const separator = colors.gray(separatorSymbol.repeat(length));
+    return new (await inquirerPromise).default.Separator(
+        (isCentered) ? centerText(separator) : separator
+    );
 }
+
+async function getTextSeparator(text: string, isCentered = false) {
+    const separator = colors.dim(decolorize(text));
+    return new (await inquirerPromise).default.Separator(
+        (isCentered) ? centerText(separator) : separator
+    );
+}
+
 
 function decolorize(str: string): string {
     // eslint-disable-next-line no-control-regex
@@ -110,7 +122,8 @@ export default {
     addBorder,
     banner,
     centerText,
-    getSeparator,
+    getLineSeparator,
+    getTextSeparator,
     confirm,
     waitForEnter
 };
