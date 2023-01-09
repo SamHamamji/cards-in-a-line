@@ -123,21 +123,21 @@ async function promptForInteger(prompt: string, acceptsZero = true) {
         type: "number",
         name: "num",
         message: prompt,
-        validate(num: number) {
-            if (!num || num <= 0)
+        validate(str: string) {
+            const num = Number.parseInt(str);
+            if (Number.isNaN(num))
+                return "Invalid format";
+            if (num < 0 || (num === 0 && !acceptsZero))
                 return "Enter a positive integer";
             return true;
         },
-        filter: (num: number) => {
+        filter(str: string) {
+            const num = Number.parseInt(str);
             if (Number.isNaN(num))
                 return "";
-            if (!Number.isInteger(num))
-                return "";
-            if (num < 0)
-                return "";
-            if (num == 0 && !acceptsZero)
-                return "";
-            return num;
+            if (num < 0 || (num === 0 && !acceptsZero))
+                return num.toString();
+            return str;
         },
     });
     return input.num;
