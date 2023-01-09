@@ -16,6 +16,7 @@ digraph G {
     SetupSettings -> EditSettings;
     SetupSettings -> StartGame;
 
+    EditSettings -> Home;
     EditSettings -> EditPlayer;
     EditSettings -> AddHuman;
     EditSettings -> AddBot;
