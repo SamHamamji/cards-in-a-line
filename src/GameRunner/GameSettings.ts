@@ -61,7 +61,7 @@ export class GameSettings {
     }
 
     async [ActionType.EditCardNumber](): Promise<Action> {
-        this.cardNumber = await TUI.Utils.promptForInteger(
+        this.cardNumber = await TUI.promptForInteger(
             "Enter the new card number",
             false,
         );
@@ -85,7 +85,7 @@ export class GameSettings {
                 name: `Edit strategy: (${player.strategy})`,
                 value: { type: ActionType.EditStrategy, playerIndex: action.playerIndex }
             },
-            await TUI.Utils.getLineSeparator(),
+            await TUI.getLineSeparator(),
             {
                 name: "Delete player",
                 value: { type: ActionType.DeletePlayer, playerIndex: action.playerIndex }
@@ -109,7 +109,7 @@ export class GameSettings {
                     name: colors[color](color),
                     value: color,
                 })),
-                await TUI.Utils.getLineSeparator(),
+                await TUI.getLineSeparator(),
                 {
                     name: "Cancel",
                     value: this.players[action.playerIndex!].color,
@@ -157,7 +157,7 @@ export class GameSettings {
                     name: strategyName,
                     value: strategyName,
                 })),
-                await TUI.Utils.getLineSeparator(),
+                await TUI.getLineSeparator(),
                 {
                     name: "Cancel",
                     value: this.players[action.playerIndex!].strategy,
@@ -184,7 +184,7 @@ export class GameSettings {
     }
 
     async [ActionType.EditTimeDelay](): Promise<Action> {
-        this.timeDelay = await TUI.Utils.promptForInteger(
+        this.timeDelay = await TUI.promptForInteger(
             "Enter the new time delay in milliseconds",
             true,
         );
@@ -237,7 +237,7 @@ export class GameSettings {
         const generalChoices = [...(this.canCreateGame() ? [{
             name: "Start",
             value: { type: ActionType.StartGame }
-        }] : [await TUI.Utils.getTextSeparator("Start")]), {
+        }] : [await TUI.getTextSeparator("Start")]), {
             name: "Cancel",
             value: { type: ActionType.Home }
         }];
@@ -245,12 +245,12 @@ export class GameSettings {
         return [
             ...(editPlayerChoices.length !== 0 ? [
                 ...editPlayerChoices,
-                await TUI.Utils.getLineSeparator(),
+                await TUI.getLineSeparator(),
             ] : []),
             ...addingPlayerChoices,
-            await TUI.Utils.getLineSeparator(),
+            await TUI.getLineSeparator(),
             ...otherSettingChoices,
-            await TUI.Utils.getLineSeparator(),
+            await TUI.getLineSeparator(),
             ...generalChoices,
         ];
     }

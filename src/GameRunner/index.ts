@@ -96,7 +96,7 @@ class GameRunner {
     }
 
     private async[ActionType.StartGame](): Promise<Action> {
-        if (!await TUI.Utils.confirm("Start game?"))
+        if (!await TUI.confirm("Start game?"))
             return { type: ActionType.Home };
         return { type: ActionType.RunGame };
     }
@@ -132,7 +132,7 @@ class GameRunner {
     }
 
     private async[ActionType.Exit](): Promise<Action | null> {
-        const confirmation = await TUI.Utils.confirm("Are you sure you want to exit?");
+        const confirmation = await TUI.confirm("Are you sure you want to exit?");
         if (!confirmation)
             return { type: ActionType.Home };
         return null;
@@ -140,16 +140,16 @@ class GameRunner {
 
     private static async getHomeChoices() {
         return [{
-            name: TUI.Utils.centerText("🂸  Single Player  🂸"),
+            name: TUI.centerText("🂸  Single Player  🂸"),
             value: { type: ActionType.SetupSinglePlayer }
         }, {
-            name: TUI.Utils.centerText("🃓   MultiPlayer   🃓"),
+            name: TUI.centerText("🃓   MultiPlayer   🃓"),
             value: { type: ActionType.SetupMultiPlayer }
         }, {
-            name: TUI.Utils.centerText("🃍   Custom game   🃍"),
+            name: TUI.centerText("🃍   Custom game   🃍"),
             value: { type: ActionType.SetupCustom }
-        }, await TUI.Utils.getLineSeparator(true, 20), {
-            name: TUI.Utils.centerText("🂦      Exit       🂦"),
+        }, await TUI.getLineSeparator(true, 20), {
+            name: TUI.centerText("🂦      Exit       🂦"),
             value: { type: ActionType.Exit }
         }] as const;
     }
@@ -159,7 +159,7 @@ class GameRunner {
             throw new Error("Game is not initialized");
 
         while (!this.game.isOver()) {
-            TUI.printRoundScreen(this.game);
+            TUI.showRoundScreen(this.game);
             if (!this.game.currentPlayer.isUser())
                 await new Promise(resolve => setTimeout(resolve, timeDelay));
             await this.game.playOneRound();
