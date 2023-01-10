@@ -1,8 +1,8 @@
 import colors from "colors/safe";
 import Game from "../Game";
-import Player from "../Player";
+import Player from "../Game/Player";
 import Strategies, { StrategyName } from "../Strategies";
-import TUI from "../TUI/index";
+import TUI from "../TUI";
 import { Action, ActionType } from "./Action";
 import CardGenerator from "./CardGenerator";
 import PlayerSettings, { PlayerColor } from "./PlayerSettings";

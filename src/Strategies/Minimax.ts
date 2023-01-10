@@ -1,5 +1,5 @@
 import Game, { CHOICES, Range } from "../Game";
-import Strategy from "../Strategy";
+import Strategy from "../Game/Strategy";
 
 interface Situation {
     scores: number[],

@@ -1,5 +1,5 @@
 import Game, { CHOICES } from "../Game";
-import Strategy from "../Strategy";
+import Strategy from "../Game/Strategy";
 const inquirer = import("inquirer");
 
 interface Input {

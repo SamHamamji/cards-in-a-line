@@ -1,5 +1,5 @@
 import { CHOICES } from "../Game";
-import Strategy from "../Strategy";
+import Strategy from "../Game/Strategy";
 
 class AlwaysFirst implements Strategy {
     name = "AlwaysFirst";

@@ -1,5 +1,5 @@
 import Game, { CHOICES } from "../Game";
-import Strategy from "../Strategy";
+import Strategy from "../Game/Strategy";
 
 /**
  * chooses the card with the highest value. If both cards have the same value, the choice is done randomly

@@ -1,4 +1,4 @@
-import Card, { CARD_SYMBOL } from "../Card";
+import Card, { CARD_SYMBOL } from "../Game/Card";
 
 class CardGenerator {
     static shuffle<Type>(array: Type[]) {
