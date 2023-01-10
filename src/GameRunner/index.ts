@@ -1,5 +1,4 @@
 import GameSettings from "./GameSettings";
-import { GameType } from "./GameType";
 import Game from "../Game";
 import TUI from "../TUI";
 import { Action, ActionType } from "./Action";
@@ -13,15 +12,14 @@ class GameRunner {
     private static readonly homeChoices = [
         {
             name: TUI.Utils.centerText("🃍  Single Player  🃍"),
-            value: GameType.SinglePlayer
+            value: { type: ActionType.SetupSinglePlayer }
         }, {
             name: TUI.Utils.centerText("🃓   MultiPlayer   🃓"),
-            value: GameType.MultiPlayer
+            value: { type: ActionType.SetupMultiPlayer }
         }, {
             name: TUI.Utils.centerText("🂸   Custom game   🂸"),
-            value: GameType.Custom
-        }
-    ] as const;
+            value: { type: ActionType.SetupCustom }
+        }] as const;
 
     constructor() {
         this.settings = new GameSettings();
@@ -81,15 +79,14 @@ class GameRunner {
 
     private async [ActionType.Home](): Promise<Action> {
         const inquirer = (await inquirerPromise).default;
-        const input = await inquirer.prompt<{ gameType: GameType }>({
+        const input = await inquirer.prompt<{ choice: Action }>({
             type: "list",
-            name: "gameType",
+            name: "choice",
             message: "Select game type",
             choices: GameRunner.homeChoices,
             pageSize: Number.MAX_SAFE_INTEGER,
         });
-        this.settings.gameType = input.gameType;
-        return { type: ActionType.SetupSettings };
+        return input.choice;
     }
 
     private async [ActionType.RunGame](): Promise<Action> {
@@ -98,8 +95,16 @@ class GameRunner {
         return { type: ActionType.EndScreen };
     }
 
-    private [ActionType.SetupSettings](): Action {
-        return this.settings.SetupSettings();
+    private [ActionType.SetupCustom](): Action {
+        return this.settings.SetupCustom();
+    }
+
+    private [ActionType.SetupSinglePlayer](): Action {
+        return this.settings.SetupSinglePlayer();
+    }
+
+    private [ActionType.SetupMultiPlayer](): Action {
+        return this.settings.SetupMultiPlayer();
     }
 
     private async [ActionType.StartGame](): Promise<Action> {
@@ -141,7 +146,7 @@ class GameRunner {
     private async [ActionType.Exit](): Promise<Action | null> {
         const confirmation = await TUI.Utils.confirm("Are you sure you want to exit?");
         if (!confirmation)
-            return { type: ActionType.AskPlayAgain };
+            return { type: ActionType.Home };
         return null;
     }
 

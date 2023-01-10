@@ -5,7 +5,6 @@ import Strategies, { StrategyName } from "../Strategies";
 import TUI from "../TUI/index";
 import { Action, ActionType } from "./Action";
 import CardGenerator from "./CardGenerator";
-import { GameType, setupGameByType } from "./GameType";
 import PlayerSettings, { PlayerColor } from "./PlayerSettings";
 const inquirerPromise = import("inquirer");
 
@@ -13,7 +12,6 @@ export class GameSettings {
     players: PlayerSettings[];
     cardNumber: number;
     timeDelay: number;
-    gameType: GameType | null;
 
     static readonly defaultPlayerNumber = 2;
     static readonly defaultStrategyName: StrategyName = "Minimax";
@@ -33,7 +31,6 @@ export class GameSettings {
         this.players = [];
         this.cardNumber = GameSettings.defaultCardNumber;
         this.timeDelay = GameSettings.defaultTimeDelay;
-        this.gameType = null;
     }
 
     [ActionType.AddHuman]() {
@@ -194,17 +191,25 @@ export class GameSettings {
         return { type: ActionType.EditSettings };
     }
 
-    [ActionType.SetupSettings](): Action {
-        if (this.gameType === null)
-            throw new Error("gameType is not initialized");
+    [ActionType.SetupMultiPlayer](): Action {
+        this.players = [];
+        for (let i = 0; i < GameSettings.defaultPlayerNumber; i++) {
+            this.AddHuman();
+        }
+        return { type: ActionType.StartGame };
+    }
 
-        setupGameByType[this.gameType](this);
+    [ActionType.SetupSinglePlayer](): Action {
+        this.players = [];
+        this.AddHuman();
+        for (let i = 1; i < GameSettings.defaultPlayerNumber; i++) {
+            this.AddBot();
+        }
+        return { type: ActionType.StartGame };
+    }
 
-        return {
-            type: (this.gameType === GameType.Custom) ?
-                ActionType.EditSettings :
-                ActionType.StartGame
-        };
+    [ActionType.SetupCustom](): Action {
+        return { type: ActionType.EditSettings };
     }
 
     private async settingsChoices() {
@@ -268,4 +273,3 @@ export class GameSettings {
 }
 
 export default GameSettings;
-export { GameType };

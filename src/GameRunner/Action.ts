@@ -14,13 +14,17 @@ enum ActionType {
     EditSettings = "EditSettings",
     Home = "Home",
     RunGame = "RunGame",
-    SetupSettings = "SetupSettings",
+    SetupCustom = "SetupCustom",
+    SetupMultiPlayer = "SetupMultiPlayer",
+    SetupSinglePlayer = "SetupSinglePlayer",
     StartGame = "StartGame",
     StartScreen = "StartScreen",
 }
 
-type ActionNeedingPlayer = ActionType.EditPlayer | ActionType.EditName |
-    ActionType.EditStrategy | ActionType.EditColor;
+type ActionNeedingPlayer = ActionType.EditPlayer |
+    ActionType.EditName |
+    ActionType.EditStrategy |
+    ActionType.EditColor;
 
 type Action = {
     type: Exclude<ActionType, ActionNeedingPlayer>;
@@ -30,4 +34,7 @@ type Action = {
     playerIndex: number;
 };
 
-export { Action, ActionType };
+export {
+    Action,
+    ActionType,
+};

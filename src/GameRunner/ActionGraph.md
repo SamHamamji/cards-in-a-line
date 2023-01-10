@@ -7,25 +7,32 @@
  3. It may take a few seconds for the graph image to update
 
 ## Graph data
-``` t
+``` ts
 digraph G {
     StartScreen -> Home;
 
-    Home -> SetupSettings;
+    Home -> SetupCustom;
+    Home -> SetupMultiPlayer;
+    Home -> SetupSinglePlayer;
 
-    SetupSettings -> EditSettings;
-    SetupSettings -> StartGame;
+    SetupCustom -> EditSettings;
+    SetupMultiPlayer -> StartGame;
+    SetupSinglePlayer -> StartGame;
 
     EditSettings -> Home;
-    EditSettings -> EditPlayer;
+    EditSettings -> StartGame;
+
+    // EditSettings
     EditSettings -> AddHuman;
     EditSettings -> AddBot;
     EditSettings -> EditCardNumber;
-    EditSettings -> StartGame;
+    EditSettings -> EditTimeDelay;
+    EditSettings -> EditPlayer;
 
     AddHuman -> EditSettings;
     AddBot -> EditSettings;
     EditCardNumber -> EditSettings;
+    EditTimeDelay -> EditSettings;
 
     // EditPlayer
     EditPlayer -> EditName;
@@ -33,25 +40,21 @@ digraph G {
     EditPlayer -> EditStrategy;
     EditPlayer -> DeletePlayer;
     EditPlayer -> EditSettings;
+
     EditName -> EditPlayer;
     EditColor -> EditPlayer;
     EditStrategy -> EditPlayer;
     DeletePlayer -> EditPlayer;
-    EditSettings -> EditPlayer;
 
     // StartGame
-    StartGame -> RunGame;
     StartGame -> Home;
-
-    RunGame -> EndScreen;
-
-    EndScreen -> AskPlayAgain;
+    StartGame -> RunGame -> EndScreen -> AskPlayAgain;
 
     AskPlayAgain -> RunGame;
     AskPlayAgain -> Home;
     AskPlayAgain -> Exit;
 
-    Exit -> AskPlayAgain;
+    Exit -> Home;
     Exit -> Stop;
 
     StartScreen[shape = Msquare];
