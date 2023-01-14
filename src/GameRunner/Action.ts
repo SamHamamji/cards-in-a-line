@@ -19,6 +19,7 @@ enum ActionType {
     SetupSinglePlayer = "SetupSinglePlayer",
     StartGame = "StartGame",
     StartScreen = "StartScreen",
+    Tutorial = "Tutorial",
 }
 
 type ActionNeedingPlayer = ActionType.EditPlayer |

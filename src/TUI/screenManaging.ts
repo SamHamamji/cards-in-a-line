@@ -1,8 +1,8 @@
-import Game from "../Game";
+import Game from "../Game/index";
 import colors from "colors/safe";
-import Banner from "./Banner";
+import banner from "./banner";
 import inputCalling from "./inputCalling";
-import textEditing from "./textEditing";
+import textProcessing from "./textProcessing";
 
 class Component {
     static boardLine(game: Game) {
@@ -59,43 +59,47 @@ class Component {
 
 function clearScreen() {
     console.clear();
-    console.log(colors.bold(Banner.banner));
+    console.log(colors.bold(banner));
 }
 
 async function showStartScreen() {
     clearScreen();
     const message = colors.blue("Press enter to start the game");
-    console.log(textEditing.centerText(message));
-    await inputCalling.waitForEnter();
+    await inputCalling.waitForEnter(textProcessing.centerText(message));
 }
 
 function showRoundScreen(game: Game) {
     clearScreen();
+    console.log(getRoundScreen(game));
+}
+
+function getRoundScreen(game: Game) {
     const scores = colors.bold("Scores: ") + Component.scoresLine(game);
     const board = Component.boardLine(game);
     const arrow = Component.arrowLine(game);
-    console.log([
+    return [
         scores,
-        textEditing.addBorder([board, arrow].join("\n")),
-    ].join("\n"));
+        textProcessing.addBorder([board, arrow].join("\n")),
+    ].join("\n");
 }
 
 async function showEndScreen(game: Game) {
     clearScreen();
+    console.log(getEndScreen(game));
+    await inputCalling.waitForEnter(colors.blue("Press enter to continue"));
+}
 
-    const boardScreen = textEditing.addBorder(
+function getEndScreen(game: Game) {
+    const boardScreen = textProcessing.addBorder(
         Component.boardLine(game) + "\n" +
         Component.historyLine(game)
     );
 
-    console.log([
+    return [
         "The game has ended",
         boardScreen,
         Component.rankingLines(game)
-    ].join("\n"));
-
-    console.log(colors.blue("Press enter to continue"));
-    await inputCalling.waitForEnter();
+    ].join("\n");
 }
 
 export default {
@@ -103,4 +107,6 @@ export default {
     showStartScreen,
     showRoundScreen,
     showEndScreen,
+    getRoundScreen,
+    getEndScreen,
 };

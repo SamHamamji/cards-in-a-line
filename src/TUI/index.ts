@@ -1,13 +1,15 @@
-import Banner from "./Banner";
+import banner from "./banner";
 import inputCalling from "./inputCalling";
-import screens from "./screenShowing";
+import screenManaging from "./screenManaging";
 import separator from "./separator";
-import textEditing from "./textEditing";
+import textProcessing from "./textProcessing";
+import Tutorial from "./Tutorial";
 
 export default {
-    ...Banner,
+    banner,
     ...inputCalling,
-    ...screens,
+    ...screenManaging,
     ...separator,
-    ...textEditing,
+    ...Tutorial,
+    ...textProcessing,
 };

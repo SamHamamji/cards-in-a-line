@@ -124,24 +124,12 @@ export class GameSettings {
     }
 
     async [ActionType.EditName](action: Action): Promise<Action> {
-        const inquirer = (await inquirerPromise).default;
-        const input = await inquirer.prompt<{ name: string; }>({
-            type: "input",
-            name: "name",
-            message: "Enter a new name",
-            default: this.players[action.playerIndex!].name,
-            validate(name: string) {
-                const trimmed = name.trim();
-                if (trimmed.length === 0)
-                    return "Name cannot be empty";
-                if (!/^[\w\s]+$/.test(trimmed))
-                    return "Name can only contain alphanumerical characters";
-                if (trimmed.length > GameSettings.maxPlayerNameLength)
-                    return `Name length cannot exceed ${GameSettings.maxPlayerNameLength}`;
-                return true;
-            },
-        });
-        this.players[action.playerIndex!].name = input.name.trim();
+        const newName = await TUI.promptForString(
+            "Enter a new name",
+            GameSettings.maxPlayerNameLength,
+            this.players[action.playerIndex!].name,
+        );
+        this.players[action.playerIndex!].name = newName;
         return { type: ActionType.EditPlayer, playerIndex: action.playerIndex! };
     }
 

@@ -33,23 +33,23 @@ class GameRunner {
         return { type: ActionType.EditSettings };
     }
 
-    private async[ActionType.EditPlayer](action: Action): Promise<Action> {
+    private async [ActionType.EditPlayer](action: Action): Promise<Action> {
         return await this.settings.EditPlayer(action);
     }
 
-    private async[ActionType.EditColor](action: Action): Promise<Action> {
+    private async [ActionType.EditColor](action: Action): Promise<Action> {
         return await this.settings.EditColor(action);
     }
 
-    private async[ActionType.EditName](action: Action): Promise<Action> {
+    private async [ActionType.EditName](action: Action): Promise<Action> {
         return await this.settings.EditName(action);
     }
 
-    private async[ActionType.EditStrategy](action: Action): Promise<Action> {
+    private async [ActionType.EditStrategy](action: Action): Promise<Action> {
         return await this.settings.EditStrategy(action);
     }
 
-    private async[ActionType.EditTimeDelay](): Promise<Action> {
+    private async [ActionType.EditTimeDelay](): Promise<Action> {
         return this.settings.EditTimeDelay();
     }
 
@@ -57,15 +57,15 @@ class GameRunner {
         return this.settings.DeletePlayer(action);
     }
 
-    private async[ActionType.EditCardNumber](): Promise<Action> {
+    private async [ActionType.EditCardNumber](): Promise<Action> {
         return await this.settings.EditCardNumber();
     }
 
-    private async[ActionType.EditSettings](): Promise<Action> {
+    private async [ActionType.EditSettings](): Promise<Action> {
         return await this.settings.EditSettings();
     }
 
-    private async[ActionType.Home](): Promise<Action> {
+    private async [ActionType.Home](): Promise<Action> {
         const inquirer = (await inquirerPromise).default;
         const input = await inquirer.prompt<{ choice: Action }>({
             type: "list",
@@ -77,7 +77,7 @@ class GameRunner {
         return input.choice;
     }
 
-    private async[ActionType.RunGame](): Promise<Action> {
+    private async [ActionType.RunGame](): Promise<Action> {
         this.game = this.settings.createGame();
         await this.play(this.settings.timeDelay);
         return { type: ActionType.EndScreen };
@@ -95,23 +95,23 @@ class GameRunner {
         return this.settings.SetupMultiPlayer();
     }
 
-    private async[ActionType.StartGame](): Promise<Action> {
+    private async [ActionType.StartGame](): Promise<Action> {
         if (!await TUI.confirm("Start game?"))
             return { type: ActionType.Home };
         return { type: ActionType.RunGame };
     }
 
-    private async[ActionType.StartScreen](): Promise<Action> {
+    private async [ActionType.StartScreen](): Promise<Action> {
         await TUI.showStartScreen();
         return { type: ActionType.Home };
     }
 
-    private async[ActionType.EndScreen](): Promise<Action> {
+    private async [ActionType.EndScreen](): Promise<Action> {
         await TUI.showEndScreen(this.game!);
         return { type: ActionType.AskPlayAgain };
     }
 
-    async[ActionType.AskPlayAgain](): Promise<Action> {
+    private async [ActionType.AskPlayAgain](): Promise<Action> {
         const inquirer = (await inquirerPromise).default;
         const input = await inquirer.prompt<{ action: Action; }>({
             type: "list",
@@ -131,11 +131,16 @@ class GameRunner {
         return input.action;
     }
 
-    private async[ActionType.Exit](): Promise<Action | null> {
+    private async [ActionType.Exit](): Promise<Action | null> {
         const confirmation = await TUI.confirm("Are you sure you want to exit?");
         if (!confirmation)
             return { type: ActionType.Home };
         return null;
+    }
+
+    private async [ActionType.Tutorial](): Promise<Action> {
+        await TUI.showTutorial();
+        return { type: ActionType.Home };
     }
 
     private static async getHomeChoices() {
@@ -149,6 +154,9 @@ class GameRunner {
             name: TUI.centerText("🃍   Custom game   🃍"),
             value: { type: ActionType.SetupCustom }
         }, await TUI.getLineSeparator(true, 20), {
+            name: TUI.centerText("🂱    Tutorial     🂱"),
+            value: { type: ActionType.Tutorial }
+        }, {
             name: TUI.centerText("🂦      Exit       🂦"),
             value: { type: ActionType.Exit }
         }] as const;
