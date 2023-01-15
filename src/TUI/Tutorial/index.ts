@@ -1,11 +1,11 @@
+import { moo, CowMooOptions } from "cowsayjs";
 import inputCalling from "../inputCalling";
 import screenManaging from "../screenManaging";
-
+import regularBunny from "./assets/regularBunny";
 import Game from "../../Game";
 import Player from "../../Game/Player";
 import Strategies from "../../Strategies";
 import textProcessing from "../textProcessing";
-import { say } from "./bunny";
 import messages from "./messages";
 import settings from "./settings";
 import CardGenerator from "../../GameRunner/CardGenerator";
@@ -146,11 +146,33 @@ async function showRoundAndThink(game: Game) {
             console.log(textProcessing.attach(
                 settings.attachingGap,
                 roundScreen,
-                say("Thinking" + settings.thinkingStats.symbol.repeat(i), "think")
+                say(
+                    "Thinking" + settings.thinkingStats.symbol.repeat(i),
+                    { action: "think" }
+                )
             ));
             setTimeout(resolve, settings.thinkingStats.time / settings.thinkingStats.barLength);
         });
     }
+}
+
+function say(
+    speech: string,
+    {
+        action = "say",
+        cow = regularBunny,
+        eyes = regularBunny.defEyes,
+        tongue = regularBunny.defTongue,
+        wrap = settings.speechWrap,
+    }: CowMooOptions = {},
+) {
+    return moo(speech, {
+        cow,
+        action,
+        eyes,
+        tongue,
+        wrap,
+    });
 }
 
 export default { showTutorial };
