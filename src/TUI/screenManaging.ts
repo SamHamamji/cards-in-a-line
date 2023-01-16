@@ -1,8 +1,10 @@
-import Game from "../Game/index";
+import Game from "../Game";
 import colors from "colors/safe";
 import banner from "./banner";
 import inputCalling from "./inputCalling";
 import textProcessing from "./textProcessing";
+import { attachingGap, defaultSpeechOptions, thinkingStats } from "./constants";
+import { CowMooOptions, moo } from "cowsayjs";
 
 class Component {
     static boardLine(game: Game) {
@@ -55,6 +57,39 @@ class Component {
         ).join("\n");
         return `Ranking:\n${podium}\n`;
     }
+
+    static roundScreen(game: Game) {
+        const scores = colors.bold("Scores: ") + Component.scoresLine(game);
+        const board = Component.boardLine(game);
+        const arrow = Component.arrowLine(game);
+        return [
+            scores,
+            textProcessing.addBorder([board, arrow].join("\n")),
+        ].join("\n");
+    }
+
+    static endScreen(game: Game) {
+        const boardScreen = textProcessing.addBorder(
+            Component.boardLine(game) + "\n" +
+            Component.historyLine(game)
+        );
+
+        return [
+            "The game has ended",
+            boardScreen,
+            Component.rankingLines(game)
+        ].join("\n");
+    }
+
+    static say(
+        speech: string,
+        options: CowMooOptions = {},
+    ) {
+        return moo(speech, {
+            ...defaultSpeechOptions,
+            ...options,
+        });
+    }
 }
 
 function clearScreen() {
@@ -70,43 +105,111 @@ async function showStartScreen() {
 
 function showRoundScreen(game: Game) {
     clearScreen();
-    console.log(getRoundScreen(game));
-}
-
-function getRoundScreen(game: Game) {
-    const scores = colors.bold("Scores: ") + Component.scoresLine(game);
-    const board = Component.boardLine(game);
-    const arrow = Component.arrowLine(game);
-    return [
-        scores,
-        textProcessing.addBorder([board, arrow].join("\n")),
-    ].join("\n");
+    console.log(Component.roundScreen(game));
 }
 
 async function showEndScreen(game: Game) {
     clearScreen();
-    console.log(getEndScreen(game));
+    console.log(Component.endScreen(game));
     await inputCalling.waitForEnter(colors.blue("Press enter to continue"));
 }
 
-function getEndScreen(game: Game) {
-    const boardScreen = textProcessing.addBorder(
-        Component.boardLine(game) + "\n" +
-        Component.historyLine(game)
-    );
+async function showEndScreenSayAndWait(
+    game: Game,
+    speech: string,
+    prompt: string,
+    options: CowMooOptions = {},
+) {
+    clearScreen();
+    console.log(textProcessing.attach(attachingGap,
+        Component.endScreen(game),
+        [
+            Component.say(speech, options),
+            prompt,
+        ].join("\n")
+    ));
+    await inputCalling.waitForEnter();
+}
 
-    return [
-        "The game has ended",
-        boardScreen,
-        Component.rankingLines(game)
-    ].join("\n");
+async function showRoundScreenSayAndWait(
+    game: Game,
+    speech: string,
+    prompt: string,
+    options: CowMooOptions = {},
+) {
+    clearScreen();
+    console.log(textProcessing.attach(attachingGap,
+        Component.roundScreen(game),
+        [
+            Component.say(speech, options),
+            prompt,
+        ].join("\n")
+    ));
+    await inputCalling.waitForEnter();
+}
+
+function showRoundScreenAndSay(
+    game: Game,
+    speech: string,
+    options: CowMooOptions = {},
+) {
+    clearScreen();
+    console.log(textProcessing.attach(attachingGap,
+        Component.roundScreen(game),
+        Component.say(speech, options)
+    ));
+}
+
+async function showRoundScreenAndThink(
+    game: Game,
+    {
+        time = thinkingStats.time,
+        barLength = thinkingStats.barLength,
+        symbol = thinkingStats.symbol,
+    }: Partial<{
+        time: number,
+        barLength: number,
+        symbol: string,
+    }> = {},
+) {
+    for (let i = 0; i <= barLength; i++) {
+        await new Promise(resolve => {
+            showRoundScreenAndSay(
+                game,
+                "Thinking" + symbol.repeat(i),
+                { action: "think" }
+            );
+            setTimeout(resolve, time / barLength);
+        });
+    }
+}
+
+function showSpeech(
+    speech: string,
+    options: CowMooOptions = {},
+) {
+    clearScreen();
+    console.log(Component.say(speech, options));
+}
+
+async function showSpeechAndWait(
+    speech: string,
+    prompt: string,
+    options: CowMooOptions = {},
+) {
+    showSpeech(speech, options);
+    await inputCalling.waitForEnter(prompt);
 }
 
 export default {
     clearScreen,
+    showSpeech,
+    showSpeechAndWait,
     showStartScreen,
     showRoundScreen,
+    showRoundScreenAndSay,
+    showRoundScreenAndThink,
+    showRoundScreenSayAndWait,
     showEndScreen,
-    getRoundScreen,
-    getEndScreen,
+    showEndScreenSayAndWait,
 };

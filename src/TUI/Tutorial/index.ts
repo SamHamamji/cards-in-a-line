@@ -1,11 +1,8 @@
-import { moo, CowMooOptions } from "cowsayjs";
 import inputCalling from "../inputCalling";
 import screenManaging from "../screenManaging";
-import regularBunny from "./assets/regularBunny";
 import Game from "../../Game";
 import Player from "../../Game/Player";
 import Strategies from "../../Strategies";
-import textProcessing from "../textProcessing";
 import messages from "./messages";
 import settings from "./settings";
 import CardGenerator from "../../GameRunner/CardGenerator";
@@ -23,14 +20,14 @@ async function showTutorial() {
 }
 
 async function showTutorialIntro() {
-    screenManaging.clearScreen();
-    console.log(say(messages.intro(settings.botStats.name)));
-    await inputCalling.waitForEnter(messages.wait);
+    await screenManaging.showSpeechAndWait(
+        messages.intro(settings.botStats.name),
+        messages.wait,
+    );
 }
 
 async function askForUserName() {
-    screenManaging.clearScreen();
-    console.log(say(messages.askForUserName.speech));
+    screenManaging.showSpeech(messages.askForUserName.speech);
     return await inputCalling.promptForString(
         messages.askForUserName.prompt,
         settings.maxNameLength,
@@ -38,9 +35,10 @@ async function askForUserName() {
 }
 
 async function greetUser(userName: string) {
-    screenManaging.clearScreen();
-    console.log(say(messages.greetUser(userName)));
-    await inputCalling.waitForEnter(messages.wait);
+    await screenManaging.showSpeechAndWait(
+        messages.greetUser(userName),
+        messages.wait,
+    );
 }
 
 function setupTutorialGame(userName: string) {
@@ -62,7 +60,11 @@ function setupTutorialGame(userName: string) {
 
 async function explainGameRules(game: Game) {
     for (let i = 0; i < messages.rules.length; i++) {
-        await showRoundSayAndWait(game, messages.rules[i]);
+        await screenManaging.showRoundScreenSayAndWait(
+            game,
+            messages.rules[i],
+            messages.wait,
+        );
     }
 }
 
@@ -71,9 +73,9 @@ async function playGame(game: Game) {
 
     while (!game.isOver()) {
         if (game.currentPlayer.isUser())
-            showRoundAndSay(game, messages.yourTurn);
+            screenManaging.showRoundScreenAndSay(game, messages.yourTurn);
         else
-            await showRoundAndThink(game);
+            await screenManaging.showRoundScreenAndThink(game);
 
         await game.playOneRound();
     }
@@ -82,97 +84,41 @@ async function playGame(game: Game) {
 }
 
 async function startPlayingGame(game: Game) {
-    showRoundAndSay(game, messages.startPlaying[0]);
+    screenManaging.showRoundScreenAndSay(game, messages.startPlaying[0]);
     await game.playOneRound();
 
-    await showRoundSayAndWait(game, messages.startPlaying[1]);
-    await showRoundSayAndWait(game, messages.startPlaying[2]);
-    await showRoundAndThink(game);
+    await screenManaging.showRoundScreenSayAndWait(
+        game,
+        messages.startPlaying[1],
+        messages.wait,
+    );
+    await screenManaging.showRoundScreenSayAndWait(
+        game,
+        messages.startPlaying[2],
+        messages.wait,
+    );
+    await screenManaging.showRoundScreenAndThink(game);
     await game.playOneRound();
 }
 
 async function showEndScreen(game: Game) {
     const ranking = game.ranking();
-    const speech = (ranking[0].length === 2) ? messages.endScreen.tie :
-        (ranking[0][0].player.isUser()) ? messages.endScreen.userWins :
-            messages.endScreen.botWins;
+    const speech = (ranking[0].length === 2)
+        ? messages.endScreen.tie
+        : (ranking[0][0].player.isUser())
+            ? messages.endScreen.userWins
+            : messages.endScreen.botWins;
 
-    screenManaging.clearScreen();
-    console.log(
-        textProcessing.attach(settings.attachingGap,
-            screenManaging.getEndScreen(game),
-            say(speech),
-        )
+    await screenManaging.showEndScreenSayAndWait(
+        game,
+        speech,
+        messages.wait,
     );
-
-    await inputCalling.waitForEnter(messages.wait);
 }
 
 async function showTutorialOutro() {
-    for (const message of messages.outro) {
-        screenManaging.clearScreen();
-        console.log(say(message));
-        await inputCalling.waitForEnter(messages.wait);
-    }
-}
-
-async function showRoundSayAndWait(
-    game: Game,
-    speech: string,
-    prompt = messages.wait
-) {
-    screenManaging.clearScreen();
-    console.log(textProcessing.attach(settings.attachingGap,
-        screenManaging.getRoundScreen(game),
-        [say(speech), prompt].join("\n"),
-    ));
-    await inputCalling.waitForEnter();
-}
-
-function showRoundAndSay(game: Game, speech: string) {
-    screenManaging.clearScreen();
-    console.log(textProcessing.attach(settings.attachingGap,
-        screenManaging.getRoundScreen(game),
-        say(speech)
-    ));
-}
-
-async function showRoundAndThink(game: Game) {
-    const roundScreen = screenManaging.getRoundScreen(game);
-
-    for (let i = 0; i <= settings.thinkingStats.barLength; i++) {
-        screenManaging.clearScreen();
-        await new Promise(resolve => {
-            console.log(textProcessing.attach(
-                settings.attachingGap,
-                roundScreen,
-                say(
-                    "Thinking" + settings.thinkingStats.symbol.repeat(i),
-                    { action: "think" }
-                )
-            ));
-            setTimeout(resolve, settings.thinkingStats.time / settings.thinkingStats.barLength);
-        });
-    }
-}
-
-function say(
-    speech: string,
-    {
-        action = "say",
-        cow = regularBunny,
-        eyes = regularBunny.defEyes,
-        tongue = regularBunny.defTongue,
-        wrap = settings.speechWrap,
-    }: CowMooOptions = {},
-) {
-    return moo(speech, {
-        cow,
-        action,
-        eyes,
-        tongue,
-        wrap,
-    });
+    for (const message of messages.outro)
+        await screenManaging.showSpeechAndWait(message, messages.wait);
 }
 
 export default { showTutorial };

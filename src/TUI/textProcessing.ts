@@ -77,7 +77,7 @@ function decolorize(str: string): string {
  * @returns the string representing the elements of `texts` attached to 
  * the right of one another, in the order in which they appear
  */
-function attach(gapWidth = 1, ...texts: string[]): string {
+function attach(gapWidth: number, ...texts: string[]): string {
     if (texts.length === 0)
         throw new Error("Texts should contain at least one string");
     if (gapWidth < 0 || !Number.isInteger(gapWidth))
