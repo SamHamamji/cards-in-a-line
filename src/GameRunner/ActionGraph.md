@@ -14,6 +14,7 @@ digraph G {
     Home -> SetupCustom;
     Home -> SetupMultiPlayer;
     Home -> SetupSinglePlayer;
+    Home -> Tutorial -> Home;
 
     SetupCustom -> EditSettings;
     SetupMultiPlayer -> StartGame;
