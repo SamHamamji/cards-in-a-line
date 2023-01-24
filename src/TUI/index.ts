@@ -1,4 +1,4 @@
-import banner from "./banner";
+import banner from "./assets/banner";
 import inputCalling from "./inputCalling";
 import screenManaging from "./screenManaging";
 import separator from "./separator";

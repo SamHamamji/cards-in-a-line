@@ -46,18 +46,19 @@ function findRightEyeInLine(line: string, stats: cowTemplateStats) {
 function colorizeLine(
     line: string,
     y: number,
-    stats: cowTemplateStats
+    stats: cowTemplateStats,
+    skinColor: colors.Color,
 ) {
     if (!stats.coloredLines.includes(y))
         return line;
 
-    line = stats.skinColor(line);
+    line = skinColor(line);
     if (stats.action.rows.includes(y))
         line = colorizeIndexInLine(
             line,
             findAction(line, stats),
             stats.action.color,
-            stats.skinColor,
+            skinColor,
         );
 
     if (stats.tongue.row === y)
@@ -65,7 +66,7 @@ function colorizeLine(
             line,
             findTongueInLine(line, stats),
             stats.tongue.color,
-            stats.skinColor,
+            skinColor,
         );
 
     if (stats.eye.row === y) {
@@ -73,13 +74,13 @@ function colorizeLine(
             line,
             findLeftEyeInLine(line, stats),
             stats.eye.color,
-            stats.skinColor,
+            skinColor,
         );
         line = colorizeIndexInLine(
             line,
             findRightEyeInLine(line, stats),
             stats.eye.color,
-            stats.skinColor,
+            skinColor,
         );
     }
 
@@ -97,11 +98,16 @@ function colorizeIndexInLine(
         defaultColor(line.slice(index + 1));
 }
 
-function readBunnyTemplate(path: string, stats: cowTemplateStats): Cow {
-    const rawTemplate = readFileSync(path, "utf-8").split("\n");
+function readBunnyTemplate(path: string) {
+    return readFileSync(path, "utf-8").split("\n");
+}
 
+function colorizeBunnyTemplate(
+    rawTemplate: string[],
+    stats: cowTemplateStats,
+): Cow {
     const coloredTemplate = rawTemplate.map((line, y) =>
-        colorizeLine(line, y, stats)
+        colorizeLine(line, y, stats, stats.skinColor)
     );
 
     return {
@@ -127,4 +133,8 @@ function readBunnyTemplate(path: string, stats: cowTemplateStats): Cow {
     };
 }
 
-export { readBunnyTemplate };
+
+export {
+    colorizeBunnyTemplate,
+    readBunnyTemplate,
+};

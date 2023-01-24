@@ -1,10 +1,11 @@
 import Game from "../Game";
 import colors from "colors/safe";
-import banner from "./banner";
+import banner from "./assets/banner";
 import inputCalling from "./inputCalling";
 import textProcessing from "./textProcessing";
 import { attachingGap, defaultSpeechOptions, thinkingStats } from "./constants";
 import { CowMooOptions, moo } from "cowsayjs";
+import { Cow } from "cowsayjs/cows/index";
 
 class Component {
     static boardLine(game: Game) {
@@ -163,21 +164,23 @@ function showRoundScreenAndSay(
 async function showRoundScreenAndThink(
     game: Game,
     {
+        cow = defaultSpeechOptions.cow as Cow,
         time = thinkingStats.time,
         barLength = thinkingStats.barLength,
         symbol = thinkingStats.symbol,
-    }: Partial<{
-        time: number,
-        barLength: number,
-        symbol: string,
-    }> = {},
+    }: {
+        cow?: Cow,
+        time?: number,
+        barLength?: number,
+        symbol?: string,
+    } = {},
 ) {
     for (let i = 0; i <= barLength; i++) {
         await new Promise(resolve => {
             showRoundScreenAndSay(
                 game,
                 "Thinking" + symbol.repeat(i),
-                { action: "think" }
+                { action: "think", cow }
             );
             setTimeout(resolve, time / barLength);
         });

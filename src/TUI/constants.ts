@@ -1,9 +1,10 @@
 import { CowMooOptions } from "cowsayjs";
-import regularBunny from "./Tutorial/assets/regularBunny";
+import { getRegularBunny } from "./assets/regularBunny";
+import colors from "colors";
 
 const attachingGap = 5;
 
-const defaultCow = regularBunny;
+const defaultCow = getRegularBunny(colors.white);
 
 const defaultSpeechOptions: CowMooOptions = {
     action: "say",

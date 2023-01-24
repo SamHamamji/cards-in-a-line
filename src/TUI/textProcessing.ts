@@ -1,4 +1,4 @@
-import banner from "./banner";
+import banner from "./assets/banner";
 
 interface Border {
     top: string;
