@@ -11,7 +11,7 @@ class Component {
     static boardLine(game: Game) {
         const boardRepr = new Array(game.cardsNumber).fill("   ");
         game.history.forEach(event => {
-            boardRepr[event.pickedCardIndex] = game.players[event.playerIndex].colorize(event.pickedCard.toString());
+            boardRepr[event.pickedCardIndex] = game.players[event.playerIndex].color(event.pickedCard.toString());
         });
         for (let index = game.range.first; index <= game.range.last; index++) {
             boardRepr[index] = colors.dim(game.board[index].toString());
@@ -35,7 +35,7 @@ class Component {
             return "";
         const currentEvent = game.history[game.history.length - 1];
         return " ".repeat(4 * currentEvent.pickedCardIndex + 1) +
-            game.players[currentEvent.playerIndex].colorize(colors.bold("^"));
+            game.players[currentEvent.playerIndex].color(colors.bold("^"));
     }
 
     static historyLine(game: Game) {
@@ -165,7 +165,7 @@ async function showRoundScreenAndThink(
     game: Game,
     stats: Partial<thinkingStats> = {},
 ) {
-    const cow = getRegularBunny(game.currentPlayer.colorize.bold);
+    const cow = getRegularBunny(game.currentPlayer.color.bold);
 
     const fullStats: thinkingStats = {
         ...defaultThinkingStats,

@@ -5,16 +5,16 @@ import { Color } from "colors/index";
 class Player {
     public readonly name: string;
     public readonly strategy: Strategy;
-    public readonly colorize: Color;
+    public readonly color: Color;
 
     constructor(name: string, strategy: Strategy, Color: Color) {
         this.name = name;
         this.strategy = strategy;
-        this.colorize = Color;
+        this.color = Color;
     }
 
     get colorizedName() {
-        return this.colorize(this.name);
+        return this.color(this.name);
     }
 
     isUser() {
