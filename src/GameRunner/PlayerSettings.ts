@@ -1,3 +1,4 @@
+import { Color } from "colors/index";
 import colors from "colors/safe";
 import Player from "../Game/Player";
 import Strategies, { StrategyName } from "../Strategies";
@@ -24,8 +25,8 @@ class PlayerSettings {
         this.color = color;
     }
 
-    get colorFunction() {
-        return colors[this.color];
+    get colorFunction(): Color {
+        return colors[this.color] as Color;
     }
 
     isHuman() {
