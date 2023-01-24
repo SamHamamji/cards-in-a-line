@@ -51,9 +51,8 @@ class Component {
         const podium = game.ranking().map((rank, index) =>
             rank.map(element => {
                 const name = element.player.colorizedName;
-                const strategy = element.player.strategy.name;
                 const score = element.score;
-                return `${index + 1}. ${name} (${strategy}): ${score}`;
+                return `${index + 1}. ${name}: ${score}`;
             }).join("\n")
         ).join("\n");
         return `Ranking:\n${podium}\n`;
