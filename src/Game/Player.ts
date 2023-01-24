@@ -1,17 +1,16 @@
 import Strategy from "./Strategy";
 import UserInput from "../Strategies/UserInput";
-
-type ColorFunction = (str: string) => string;
+import { Color } from "colors/index";
 
 class Player {
     public readonly name: string;
     public readonly strategy: Strategy;
-    public readonly colorize: ColorFunction;
+    public readonly colorize: Color;
 
-    constructor(name: string, strategy: Strategy, colorFunction: ColorFunction = s => s) {
+    constructor(name: string, strategy: Strategy, Color: Color) {
         this.name = name;
         this.strategy = strategy;
-        this.colorize = colorFunction;
+        this.colorize = Color;
     }
 
     get colorizedName() {
