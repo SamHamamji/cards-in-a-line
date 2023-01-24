@@ -5,9 +5,9 @@ import { cowTemplateStats } from "./templateStats";
 
 const regularBunnyPath = path.join(__dirname, "./regularBunny.txt");
 
-const rawRegularBunny = readBunnyTemplate(regularBunnyPath);
+const regularBunnyTemplate = readBunnyTemplate(regularBunnyPath);
 
-const defaultStats: cowTemplateStats = {
+const regularBunnyStats: cowTemplateStats = {
     name: "regular bunny",
     skinColor: colors.reset,
     action: {
@@ -29,16 +29,19 @@ const defaultStats: cowTemplateStats = {
 };
 
 function getRegularBunny(color?: colors.Color) {
-    const stats: cowTemplateStats = (!color) ? defaultStats : {
-        ...defaultStats,
-        skinColor: color,
+    const stats: cowTemplateStats = (!color) ? regularBunnyStats : {
+        ...regularBunnyStats,
+        skinColor: color.bold,
         tongue: {
-            ...defaultStats.tongue,
+            ...regularBunnyStats.tongue,
             color,
         },
     };
-    return colorizeBunnyTemplate(rawRegularBunny, stats);
+    return colorizeBunnyTemplate(regularBunnyTemplate, stats);
 }
 
-
-export { getRegularBunny };
+export {
+    regularBunnyTemplate,
+    getRegularBunny,
+    regularBunnyStats
+};

@@ -1,7 +1,7 @@
 import { readFileSync } from "fs";
-import colors from "colors";
 import { Cow } from "cowsayjs/cows";
 import { cowTemplateStats } from "./templateStats";
+import { Color } from "colors/index";
 
 function findAction(line: string, stats: cowTemplateStats): number {
     return line.indexOf(stats.action.symbol);
@@ -47,7 +47,7 @@ function colorizeLine(
     line: string,
     y: number,
     stats: cowTemplateStats,
-    skinColor: colors.Color,
+    skinColor: Color,
 ) {
     if (!stats.coloredLines.includes(y))
         return line;
@@ -90,8 +90,8 @@ function colorizeLine(
 function colorizeIndexInLine(
     line: string,
     index: number,
-    color: colors.Color,
-    defaultColor: colors.Color
+    color: Color,
+    defaultColor: Color,
 ) {
     return line.slice(0, index) +
         color(line[index]) +
@@ -132,7 +132,6 @@ function colorizeBunnyTemplate(
         ]],
     };
 }
-
 
 export {
     colorizeBunnyTemplate,

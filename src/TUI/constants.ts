@@ -4,7 +4,7 @@ import colors from "colors";
 
 const attachingGap = 5;
 
-const defaultCow = getRegularBunny(colors.white);
+const defaultCow = getRegularBunny(colors.reset);
 
 const defaultSpeechOptions: CowMooOptions = {
     action: "say",
@@ -12,10 +12,16 @@ const defaultSpeechOptions: CowMooOptions = {
     eyes: defaultCow.defEyes,
     tongue: defaultCow.defTongue,
     wrap: 28,
-};
+} as const;
 
-const thinkingStats = {
-    time: 1500,
+interface thinkingStats {
+    time: number;
+    barLength: number;
+    symbol: string;
+}
+
+const defaultThinkingStats: thinkingStats = {
+    time: 2000,
     barLength: 3,
     symbol: ".",
 } as const;
@@ -23,5 +29,6 @@ const thinkingStats = {
 export {
     attachingGap,
     thinkingStats,
+    defaultThinkingStats,
     defaultSpeechOptions,
 };

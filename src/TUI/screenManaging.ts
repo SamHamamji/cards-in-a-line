@@ -3,9 +3,9 @@ import colors from "colors/safe";
 import banner from "./assets/banner";
 import inputCalling from "./inputCalling";
 import textProcessing from "./textProcessing";
-import { attachingGap, defaultSpeechOptions, thinkingStats } from "./constants";
+import { attachingGap, defaultSpeechOptions, defaultThinkingStats, thinkingStats } from "./constants";
 import { CowMooOptions, moo } from "cowsayjs";
-import { Cow } from "cowsayjs/cows/index";
+import { getRegularBunny } from "./assets/regularBunny";
 
 class Component {
     static boardLine(game: Game) {
@@ -163,26 +163,26 @@ function showRoundScreenAndSay(
 
 async function showRoundScreenAndThink(
     game: Game,
-    {
-        cow = defaultSpeechOptions.cow as Cow,
-        time = thinkingStats.time,
-        barLength = thinkingStats.barLength,
-        symbol = thinkingStats.symbol,
-    }: {
-        cow?: Cow,
-        time?: number,
-        barLength?: number,
-        symbol?: string,
-    } = {},
+    stats: Partial<thinkingStats> = {},
 ) {
-    for (let i = 0; i <= barLength; i++) {
+    const cow = getRegularBunny(game.currentPlayer.colorize.bold);
+
+    const fullStats: thinkingStats = {
+        ...defaultThinkingStats,
+        ...stats,
+    };
+
+    for (let i = 0; i <= fullStats.barLength; i++) {
         await new Promise(resolve => {
             showRoundScreenAndSay(
                 game,
-                "Thinking" + symbol.repeat(i),
-                { action: "think", cow }
+                "Thinking" + fullStats.symbol.repeat(i),
+                {
+                    action: "think",
+                    cow,
+                },
             );
-            setTimeout(resolve, time / barLength);
+            setTimeout(resolve, fullStats.time / (fullStats.barLength + 1));
         });
     }
 }

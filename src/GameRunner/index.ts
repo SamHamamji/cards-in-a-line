@@ -169,7 +169,9 @@ class GameRunner {
         while (!this.game.isOver()) {
             TUI.showRoundScreen(this.game);
             if (!this.game.currentPlayer.isUser())
-                await new Promise(resolve => setTimeout(resolve, timeDelay));
+                await TUI.showRoundScreenAndThink(
+                    this.game, { time: timeDelay }
+                );
             await this.game.playOneRound();
         }
     }

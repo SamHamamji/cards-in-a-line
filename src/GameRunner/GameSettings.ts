@@ -15,7 +15,7 @@ export class GameSettings {
 
     static readonly defaultPlayerNumber = 2;
     static readonly defaultStrategyName: StrategyName = "Minimax";
-    static readonly defaultTimeDelay = 500;
+    static readonly defaultTimeDelay = 1500;
     static readonly defaultCardNumber = 12;
     static readonly maxPlayerNameLength = 16;
 

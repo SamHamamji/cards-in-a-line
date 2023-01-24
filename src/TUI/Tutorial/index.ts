@@ -85,7 +85,7 @@ async function playGame(game: Game, cow: Cow) {
                 { cow },
             );
         else
-            await screenManaging.showRoundScreenAndThink(game, { cow });
+            await screenManaging.showRoundScreenAndThink(game);
 
         await game.playOneRound();
     }
@@ -113,7 +113,7 @@ async function startPlayingGame(game: Game, cow: Cow) {
         messages.wait,
         { cow },
     );
-    await screenManaging.showRoundScreenAndThink(game, { cow });
+    await screenManaging.showRoundScreenAndThink(game);
     await game.playOneRound();
 }
 
