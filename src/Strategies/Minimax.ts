@@ -3,35 +3,42 @@ import Strategy from "../Game/Strategy";
 
 interface Situation {
     scores: number[],
-    isComputed: boolean,
-    bestChoice?: CHOICES
+    bestChoice?: CHOICES,
 }
 
 class Minimax implements Strategy {
     readonly name;
-    private computedMatrix: boolean;
-    private matrix: Situation[][];
-    private game: Game | null;
+    private matrix?: Situation[][];
+    private game?: Game;
 
     constructor() {
         this.name = "Minimax";
-        this.matrix = [];
-        this.computedMatrix = false;
-        this.game = null;
     }
 
-    async choice(game: Game) {
-        this.checkGameCorresponds(game);
-        if (!this.computedMatrix)
-            this.fillMatrix(game);
-        return this.matrix[game.range.first][game.range.last].bestChoice!;
+    public choice(game: Game) {
+        if (!this.isInitialized())
+            this.initialize(game);
+        else if (this.game !== game)
+            throw new Error("Given game doesn't match stored game");
+
+        return this.getSituation(game.range, game.currentPlayerIndex).bestChoice!;
     }
 
-    private initializeMatrix(game: Game): void {
+    private isInitialized() {
+        return this.game !== undefined && this.matrix !== undefined;
+    }
+
+    private initialize(game: Game) {
+        this.game = game;
+        this.initializeMatrix();
+        this.fillBaseCases();
+    }
+
+    private initializeMatrix(): void {
+        const game = this.game!;
         this.matrix = Array.from({ length: game.cardsNumber }, () =>
-            Array.from({ length: game.cardsNumber }, () => ({
-                scores: Array.from({ length: game.playersNumber }, () => NaN),
-                isComputed: false,
+            Array.from({ length: game.cardsNumber }, (): Situation => ({
+                scores: Array.from({ length: game.playersNumber }, () => NaN)
             }))
         );
     }
@@ -41,92 +48,64 @@ class Minimax implements Strategy {
      * Each game where one card is left (range.first = range.last) ends with
      * all the players having 0 except the last player
      */
-    private fillBaseCases(game: Game) {
+    private fillBaseCases() {
+        const game = this.game!;
         const lastPlayer = (game.cardsNumber - 1) % game.players.length;
         for (let i = 0; i < game.cardsNumber; i++) {
-            const baseCase = this.matrix[i][i];
+            const baseCase = this.matrix![i][i];
             baseCase.scores.fill(0);
             baseCase.scores[lastPlayer] = game.board[i].value;
-            baseCase.isComputed = true;
+            baseCase.bestChoice = CHOICES.FIRST;
         }
     }
 
     /** Fills the matrix with the right values */
-    private fillMatrix(game: Game): void {
-        this.checkGameCorresponds(game);
-        this.initializeMatrix(game);
-        this.fillBaseCases(game);
-        this.fillMatrixCell(
-            game,
-            game.range.first,
-            game.range.last,
-            game.currentPlayerIndex
-        );
-        this.computedMatrix = true;
-    }
+    private getSituation({ first, last }: Range, playerIndex: number) {
+        const situation = this.matrix![first][last];
+        if (this.hasComputed({ first, last }))
+            return situation;
 
-    private fillMatrixCell(
-        game: Game,
-        first: number,
-        last: number,
-        playerIndex: number,
-    ) {
-        if (first > last)
-            throw new Error(`Range is not valid: ${first} > ${last}`);
+        const nextPlayer = (playerIndex + 1) % this.game!.playersNumber;
+        const left = this.getSituation({ first: first + 1, last }, nextPlayer);
+        const right = this.getSituation({ first, last: last - 1 }, nextPlayer);
 
-        const situation = this.matrix[first][last];
-        if (situation.isComputed)
-            return;
+        const leftScore = left.scores[playerIndex]
+            + this.game!.board[first].value;
+        const rightScore = right.scores[playerIndex]
+            + this.game!.board[last].value;
 
-        const nextPlayerIndex = (playerIndex + 1) % game.playersNumber;
-
-        this.fillMatrixCell(game, first + 1, last, nextPlayerIndex);
-        this.fillMatrixCell(game, first, last - 1, nextPlayerIndex);
-
-        const leftSituation = this.matrix[first + 1][last];
-        const rightSituation = this.matrix[first][last - 1];
-
-        const leftScore = leftSituation.scores[playerIndex]
-            + game.board[first].value;
-        const rightScore = rightSituation.scores[playerIndex]
-            + game.board[last].value;
-
-        // Choose best situation
+        // Choose the best situation
         if (leftScore > rightScore ||
             (leftScore === rightScore && Math.random() < 0.5)) {
-            situation.scores = leftSituation.scores.slice();
+            situation.scores = left.scores.slice();
             situation.scores[playerIndex] = leftScore;
             situation.bestChoice = CHOICES.FIRST;
         } else {
-            situation.scores = rightSituation.scores.slice();
+            situation.scores = right.scores.slice();
             situation.scores[playerIndex] = rightScore;
             situation.bestChoice = CHOICES.LAST;
         }
-        situation.isComputed = true;
+
+        return situation;
     }
 
-    /**
-     * @returns the scores array of the nash equilibrium in this game state
-     */
-    public nashEquilibrium(game: Game, range?: Range) {
-        if (!this.computedMatrix)
-            this.fillMatrix(game);
-        else
-            this.checkGameCorresponds(game);
-
+    /** @returns the scores of the nash equilibrium in the given game state */
+    public nashEquilibrium(range?: Range) {
+        const game = this.game!;
         if (range === undefined)
             range = game.range;
-        return this.matrix[range.first][range.last].scores;
+
+        return this.getSituation(
+            game.range,
+            (game.cardsNumber - game.history.length - 1) % game.players.length
+        ).scores;
     }
 
-    /**
-     * Makes sure game corresponds to the class game
-     */
-    private checkGameCorresponds(game: Game) {
-        if (this.game === null)
-            this.game = game;
-        else if (this.game !== game)
-            throw new Error("Given game doesn't match instance game");
+    private hasComputed({ first, last }: Range) {
+        if (first > last)
+            throw new Error(`Range is not valid: ${first} > ${last}`);
+        const situation = this.matrix![first][last];
+        return situation.bestChoice !== undefined;
     }
 }
 
