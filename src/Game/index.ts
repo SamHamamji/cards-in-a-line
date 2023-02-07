@@ -96,7 +96,7 @@ class Game {
         }]));
         answer.sort((a, b) => (b[0].score - a[0].score));
         for (let index = 0; index < answer.length - 1; index++) {
-            if (answer[index][0].score == answer[index + 1][0].score) {
+            if (answer[index][0].score === answer[index + 1][0].score) {
                 answer[index].push(answer[index + 1][0]);
                 answer.splice(index + 1, 1);
                 index--;
