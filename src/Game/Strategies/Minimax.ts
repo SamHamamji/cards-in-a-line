@@ -1,10 +1,9 @@
-import Game, { CHOICES, Range } from "../Game";
-import Strategy from "../Game/Strategy";
-import TieBreaker, { maximumTieBreaker } from "./TieBreaker";
+import Game, { CHOICE, Range } from "../index";
+import Strategy, { TieBreaker, maximumTieBreaker } from "../Strategy";
 
 interface Situation {
     scores: number[],
-    bestChoice?: CHOICES,
+    bestChoice?: CHOICE,
 }
 
 class Minimax implements Strategy {
@@ -59,7 +58,7 @@ class Minimax implements Strategy {
             const baseCase = this.matrix![i][i];
             baseCase.scores.fill(0);
             baseCase.scores[lastPlayer] = game.board[i].value;
-            baseCase.bestChoice = CHOICES.FIRST;
+            baseCase.bestChoice = CHOICE.FIRST;
         }
     }
 
@@ -74,26 +73,26 @@ class Minimax implements Strategy {
         const nextPlayer = (playerIndex + 1) % this.game!.playersNumber;
 
         const situations = {
-            [CHOICES.FIRST]:
+            [CHOICE.FIRST]:
                 this.getSituation({ first: first + 1, last }, nextPlayer),
-            [CHOICES.LAST]:
+            [CHOICE.LAST]:
                 this.getSituation({ first, last: last - 1 }, nextPlayer),
         };
 
         const scores = {
-            [CHOICES.FIRST]:
-                situations[CHOICES.FIRST].scores[playerIndex]
+            [CHOICE.FIRST]:
+                situations[CHOICE.FIRST].scores[playerIndex]
                 + this.game!.board[first].value,
-            [CHOICES.LAST]:
-                situations[CHOICES.LAST].scores[playerIndex]
+            [CHOICE.LAST]:
+                situations[CHOICE.LAST].scores[playerIndex]
                 + this.game!.board[last].value,
         };
 
         // Choose the best situation
-        const bestChoice = (scores[CHOICES.FIRST] > scores[CHOICES.LAST])
-            ? CHOICES.FIRST
-            : (scores[CHOICES.FIRST] !== scores[CHOICES.LAST])
-                ? CHOICES.LAST
+        const bestChoice = (scores[CHOICE.FIRST] > scores[CHOICE.LAST])
+            ? CHOICE.FIRST
+            : (scores[CHOICE.FIRST] !== scores[CHOICE.LAST])
+                ? CHOICE.LAST
                 : this.breakTie(this.game!);
 
         // Update current situation

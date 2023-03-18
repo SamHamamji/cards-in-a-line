@@ -1,7 +1,7 @@
 import Card from "./Card";
 import Player from "./Player";
 
-enum CHOICES { FIRST, LAST }
+enum CHOICE { FIRST, LAST }
 
 interface Range {
     first: number;
@@ -9,7 +9,7 @@ interface Range {
 }
 
 interface Event {
-    choice: CHOICES;
+    choice: CHOICE;
     pickedCard: Card;
     pickedCardIndex: number;
     playerIndex: number;
@@ -52,8 +52,8 @@ class Game {
     /**
      * @returns picked card index
      */
-    private pickCard(choice: CHOICES): number {
-        if (choice === CHOICES.FIRST) {
+    private pickCard(choice: CHOICE): number {
+        if (choice === CHOICE.FIRST) {
             return this.range.first++;
         } else {
             return this.range.last--;
@@ -64,7 +64,7 @@ class Game {
         this.scores[this.currentPlayerIndex] += this.board[pickedCardIndex].value;
     }
 
-    private updateHistory(choice: CHOICES, pickedCardIndex: number, playerIndex: number) {
+    private updateHistory(choice: CHOICE, pickedCardIndex: number, playerIndex: number) {
         this.history.push({
             choice,
             pickedCard: this.board[pickedCardIndex],
@@ -107,4 +107,4 @@ class Game {
 }
 
 export default Game;
-export { CHOICES, Event, Range };
+export { CHOICE, Event, Range };

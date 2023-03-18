@@ -1,9 +1,9 @@
-import Game, { CHOICES } from "../Game";
-import Strategy from "../Game/Strategy";
+import Game, { CHOICE } from "../index";
+import Strategy from "../Strategy";
 const inquirer = import("inquirer");
 
 interface Input {
-    choice: CHOICES;
+    choice: CHOICE;
 }
 
 class UserInput implements Strategy {
@@ -15,10 +15,10 @@ class UserInput implements Strategy {
             name: "choice",
             message: `${game.currentPlayer.colorizedName}, which card do you want to pick?`,
             choices: [{
-                value: CHOICES.FIRST,
+                value: CHOICE.FIRST,
                 name: `First: ${game.board[game.range.first]}`
             }, {
-                value: CHOICES.LAST,
+                value: CHOICE.LAST,
                 name: `Last: ${game.board[game.range.last]}`
             }]
         });

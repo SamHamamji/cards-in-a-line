@@ -1,6 +1,5 @@
-import Game, { CHOICES } from "../Game";
-import Strategy from "../Game/Strategy";
-import TieBreaker, { randomTieBreaker } from "./TieBreaker";
+import Game, { CHOICE } from "../index";
+import Strategy, { TieBreaker, randomTieBreaker } from "../Strategy";
 
 /**
  * Chooses the card with the highest value.
@@ -17,9 +16,9 @@ class ChooseMaximum implements Strategy {
 
     choice(game: Game) {
         if (game.board[game.range.first] > game.board[game.range.last])
-            return CHOICES.FIRST;
+            return CHOICE.FIRST;
         else if (game.board[game.range.first] !== game.board[game.range.last])
-            return CHOICES.LAST;
+            return CHOICE.LAST;
         else
             return this.breakTie(game);
     }

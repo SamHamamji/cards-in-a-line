@@ -1,5 +1,5 @@
-import { CHOICES } from "../Game";
-import Strategy from "../Game/Strategy";
+import { CHOICE } from "../index";
+import Strategy from "../Strategy";
 
 class Random implements Strategy {
     readonly firstProbability;
@@ -9,7 +9,7 @@ class Random implements Strategy {
         this.firstProbability = firstProbability;
     }
     choice() {
-        return Math.random() < this.firstProbability ? CHOICES.FIRST : CHOICES.LAST;
+        return Math.random() < this.firstProbability ? CHOICE.FIRST : CHOICE.LAST;
     }
 }
 

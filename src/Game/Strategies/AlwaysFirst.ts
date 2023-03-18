@@ -1,10 +1,10 @@
-import { CHOICES } from "../Game";
-import Strategy from "../Game/Strategy";
+import { CHOICE } from "../index";
+import Strategy from "../Strategy";
 
 class AlwaysFirst implements Strategy {
     name = "AlwaysFirst";
     choice() {
-        return CHOICES.FIRST;
+        return CHOICE.FIRST;
     }
 }
 

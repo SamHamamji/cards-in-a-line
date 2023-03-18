@@ -1,7 +1,7 @@
 import colors from "colors/safe";
 import Game from "../Game";
 import Player from "../Game/Player";
-import Strategies, { StrategyName } from "../Strategies";
+import Strategies, { StrategyName } from "../Game/Strategies/index";
 import TUI from "../TUI";
 import { Action, ActionType } from "./Action";
 import CardGenerator from "./CardGenerator";

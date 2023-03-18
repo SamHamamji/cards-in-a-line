@@ -1,5 +1,5 @@
 import Strategy from "./Strategy";
-import UserInput from "../Strategies/UserInput";
+import UserInput from "./Strategies/UserInput";
 import { Color } from "colors/index";
 
 class Player {

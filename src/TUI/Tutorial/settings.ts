@@ -1,5 +1,5 @@
 import colors from "colors";
-import { StrategyName } from "../../Strategies/index";
+import { StrategyName } from "../../Game/Strategies/index";
 
 const cardNumber = 12;
 

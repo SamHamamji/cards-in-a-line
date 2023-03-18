@@ -2,7 +2,7 @@ import inputCalling from "../inputCalling";
 import screenManaging from "../screenManaging";
 import Game from "../../Game";
 import Player from "../../Game/Player";
-import Strategies from "../../Strategies";
+import Strategies from "../../Game/Strategies/index";
 import messages from "./messages";
 import settings from "./settings";
 import CardGenerator from "../../GameRunner/CardGenerator";
