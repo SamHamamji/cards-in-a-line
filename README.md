@@ -27,7 +27,7 @@ npm start
 | AlwaysLast    | Always chooses the last card  | - |
 | ChooseMaximum | Compares the values of the two cards and chooses the card having highest value | <li> breakTie: `TieBreaker`</li><li>Is set to choose randomly by default</li> |
 | Clone         | <li>Chooses from the same side as the previous player</li><li>If it is the first move (no player has played previously), then it chooses randomly</li> | - |
-| Minimax       | <li>Visualizes all the possible scenarios and finds the most optimal one assuming that the opponent(s) also play optimally, read [this](https://www.geeksforgeeks.org/minimax-algorithm-in-game-theory-set-1-introduction/) for more information</li><li>When it is faced to two scenarios having the same expected scores, it chooses randomly</li><li>Uses dynamnic programming, reducing its complexity from O(2^n), n being the number of cards, to O(n^2)</li> | - |
+| Minimax       | <li>Visualizes all the possible scenarios and finds the most optimal one assuming that the opponent(s) also play optimally, read [this](https://www.geeksforgeeks.org/minimax-algorithm-in-game-theory-set-1-introduction/) for more information</li><li>When it is faced to two scenarios having the same expected scores, it chooses randomly</li><li>Uses dynamnic programming, reducing its complexity from O(2^n), n being the number of cards, to O(n^2)</li> | <li> breakTie: `TieBreaker`</li><li>Is set to choose the card with the highest value by default</li> |
 | Random        | Randomly Chooses one of the two options | <li>firstProbability: `number`</li><li>Represents the probability of choosing the first card</li><li>Is set to `0.5` by default</li>|
 | UserInput     | Prompts the user to input their choice | - |
 

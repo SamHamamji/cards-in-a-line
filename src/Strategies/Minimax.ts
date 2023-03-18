@@ -1,5 +1,6 @@
 import Game, { CHOICES, Range } from "../Game";
 import Strategy from "../Game/Strategy";
+import TieBreaker, { maximumTieBreaker } from "./TieBreaker";
 
 interface Situation {
     scores: number[],
@@ -10,9 +11,12 @@ class Minimax implements Strategy {
     readonly name;
     private matrix?: Situation[][];
     private game?: Game;
+    private breakTie: TieBreaker;
+    private static defaultTieBreaker = maximumTieBreaker;
 
-    constructor() {
+    constructor(breakTie?: TieBreaker) {
         this.name = "Minimax";
+        this.breakTie = breakTie || Minimax.defaultTieBreaker;
     }
 
     public choice(game: Game) {
@@ -59,34 +63,46 @@ class Minimax implements Strategy {
         }
     }
 
-    /** Fills the matrix with the right values */
+    /**
+     * @returns the situation in the given game state by evaluating it if
+     * necessary
+     */
     private getSituation({ first, last }: Range, playerIndex: number) {
-        const situation = this.matrix![first][last];
         if (this.hasComputed({ first, last }))
-            return situation;
+            return this.matrix![first][last];
 
         const nextPlayer = (playerIndex + 1) % this.game!.playersNumber;
-        const left = this.getSituation({ first: first + 1, last }, nextPlayer);
-        const right = this.getSituation({ first, last: last - 1 }, nextPlayer);
 
-        const leftScore = left.scores[playerIndex]
-            + this.game!.board[first].value;
-        const rightScore = right.scores[playerIndex]
-            + this.game!.board[last].value;
+        const situations = {
+            [CHOICES.FIRST]:
+                this.getSituation({ first: first + 1, last }, nextPlayer),
+            [CHOICES.LAST]:
+                this.getSituation({ first, last: last - 1 }, nextPlayer),
+        };
+
+        const scores = {
+            [CHOICES.FIRST]:
+                situations[CHOICES.FIRST].scores[playerIndex]
+                + this.game!.board[first].value,
+            [CHOICES.LAST]:
+                situations[CHOICES.LAST].scores[playerIndex]
+                + this.game!.board[last].value,
+        };
 
         // Choose the best situation
-        if (leftScore > rightScore ||
-            (leftScore === rightScore && Math.random() < 0.5)) {
-            situation.scores = left.scores.slice();
-            situation.scores[playerIndex] = leftScore;
-            situation.bestChoice = CHOICES.FIRST;
-        } else {
-            situation.scores = right.scores.slice();
-            situation.scores[playerIndex] = rightScore;
-            situation.bestChoice = CHOICES.LAST;
-        }
+        const bestChoice = (scores[CHOICES.FIRST] > scores[CHOICES.LAST])
+            ? CHOICES.FIRST
+            : (scores[CHOICES.FIRST] !== scores[CHOICES.LAST])
+                ? CHOICES.LAST
+                : this.breakTie(this.game!);
 
-        return situation;
+        // Update current situation
+        const current = this.matrix![first][last];
+        current.bestChoice = bestChoice;
+        current.scores = situations[bestChoice].scores.slice();
+        current.scores[playerIndex] = scores[bestChoice];
+
+        return current;
     }
 
     /** @returns the scores of the nash equilibrium in the given game state */
