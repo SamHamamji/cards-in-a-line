@@ -16,6 +16,7 @@ const Strategies = {
     UserInput,
 };
 
-export type StrategyName = keyof typeof Strategies
+type StrategyName = keyof typeof Strategies;
 
 export default Strategies;
+export { StrategyName };
