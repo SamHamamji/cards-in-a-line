@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/index.ts",
   "scripts": {
-    "start": "clear && ts-node src/index.ts",
+    "start": "ts-node src/index.ts",
     "lint": "eslint src/**/*.ts --fix"
   },
   "author": "samhamamji0@gmail.com",
