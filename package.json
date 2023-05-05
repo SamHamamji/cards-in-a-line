@@ -1,26 +1,26 @@
 {
   "name": "cards-in-a-line",
   "version": "1.0.0",
-  "description": "",
+  "description": "A terminal game based on the coins in a line problem, featuring nice graphics and a cute bunny character.",
   "main": "src/index.ts",
   "scripts": {
     "start": "ts-node src/index.ts",
     "lint": "eslint src/**/*.ts --fix"
   },
-  "author": "samhamamji0@gmail.com",
+  "author": "Sam Hamamji",
   "license": "GPL-3.0",
   "dependencies": {
     "colors": "^1.4.0",
     "cowsayjs": "^2.0.0",
-    "inquirer": "^9.1.0",
-    "ts-node": "^10.8.2",
-    "typescript": "^4.7.4"
+    "inquirer": "^9.1.0"
   },
   "devDependencies": {
     "@types/inquirer": "^9.0.0",
     "@types/node": "^18.0.3",
     "@typescript-eslint/eslint-plugin": "^5.30.5",
     "@typescript-eslint/parser": "^5.30.5",
-    "eslint": "^8.19.0"
+    "eslint": "^8.19.0",
+    "ts-node": "^10.8.2",
+    "typescript": "^5.0.4"
   }
 }
