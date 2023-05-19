@@ -1,8 +1,8 @@
 import banner from "./assets/banner";
 import inputCalling from "./inputCalling";
 import screenManaging from "./screenManaging";
-import separator from "./separator";
-import textProcessing from "./textProcessing";
+import * as separator from "./separator";
+import * as textProcessing from "./textProcessing";
 import Tutorial from "./Tutorial";
 
 export default {

@@ -2,7 +2,7 @@ import Game from "../../Game";
 import colors from "colors/safe";
 import banner from "../assets/banner";
 import inputCalling from "../inputCalling";
-import textProcessing from "../textProcessing";
+import { attach, centerText } from "../textProcessing";
 import { attachingGap, defaultThinkingStats, thinkingStats } from "../constants";
 import { CowMooOptions } from "cowsayjs";
 import { getRegularBunny } from "../assets/regularBunny";
@@ -16,7 +16,7 @@ function clearScreen() {
 async function showStartScreen() {
     clearScreen();
     const message = colors.blue("Press enter to start the game");
-    await inputCalling.waitForEnter(textProcessing.centerText(message));
+    await inputCalling.waitForEnter(centerText(message));
 }
 
 function showRoundScreen(game: Game) {
@@ -37,7 +37,7 @@ async function showEndScreenSayAndWait(
     options: CowMooOptions = {},
 ) {
     clearScreen();
-    console.log(textProcessing.attach(attachingGap,
+    console.log(attach(attachingGap,
         Component.endScreen(game),
         [
             Component.say(speech, options),
@@ -54,7 +54,7 @@ async function showRoundScreenSayAndWait(
     options: CowMooOptions = {},
 ) {
     clearScreen();
-    console.log(textProcessing.attach(attachingGap,
+    console.log(attach(attachingGap,
         Component.roundScreen(game),
         [
             Component.say(speech, options),
@@ -70,7 +70,7 @@ function showRoundScreenAndSay(
     options: CowMooOptions = {},
 ) {
     clearScreen();
-    console.log(textProcessing.attach(attachingGap,
+    console.log(attach(attachingGap,
         Component.roundScreen(game),
         Component.say(speech, options)
     ));

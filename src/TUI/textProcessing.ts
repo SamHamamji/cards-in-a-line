@@ -122,7 +122,7 @@ function padArrays(a: string[], b: string[]) {
     return padded;
 }
 
-export default {
+export {
     addBorder,
     attach,
     BORDERS,

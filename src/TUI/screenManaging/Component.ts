@@ -1,6 +1,6 @@
 import Game from "../../Game";
 import colors from "colors/safe";
-import textProcessing from "../textProcessing";
+import { addBorder } from "../textProcessing";
 import { defaultSpeechOptions } from "../constants";
 import { CowMooOptions, moo } from "cowsayjs";
 
@@ -58,12 +58,12 @@ function roundScreen(game: Game) {
     const arrow = arrowLine(game);
     return [
         scores,
-        textProcessing.addBorder([board, arrow].join("\n")),
+        addBorder([board, arrow].join("\n")),
     ].join("\n");
 }
 
 function endScreen(game: Game) {
-    const boardScreen = textProcessing.addBorder(
+    const boardScreen = addBorder(
         boardLine(game) + "\n" +
         historyLine(game)
     );
