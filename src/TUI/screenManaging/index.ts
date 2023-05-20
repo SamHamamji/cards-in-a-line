@@ -1,6 +1,6 @@
 import Game from "../../Game";
 import colors from "colors/safe";
-import banner from "../assets/banner";
+import { banner } from "../assets/banner.json";
 import inputCalling from "../inputCalling";
 import { attach, centerText } from "../textProcessing";
 import { attachingGap, defaultThinkingStats, thinkingStats } from "../constants";

@@ -1,11 +1,8 @@
 import path from "path";
 import colors from "colors";
-import { colorizeBunnyTemplate, readBunnyTemplate } from "./readBunny";
+import { colorizeBunnyTemplate } from "./readBunny";
 import { cowTemplateStats } from "./templateStats";
-
-const regularBunnyPath = path.join(__dirname, "./regularBunny.txt");
-
-const regularBunnyTemplate = readBunnyTemplate(regularBunnyPath);
+import { regularBunny } from "./regularBunny.json";
 
 const regularBunnyStats: cowTemplateStats = {
     name: "regular bunny",
@@ -37,11 +34,11 @@ function getRegularBunny(color?: colors.Color) {
             color,
         },
     };
-    return colorizeBunnyTemplate(regularBunnyTemplate, stats);
+    return colorizeBunnyTemplate(regularBunny.split("\n"), stats);
 }
 
 export {
-    regularBunnyTemplate,
+    regularBunny,
     getRegularBunny,
     regularBunnyStats
 };

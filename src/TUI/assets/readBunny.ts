@@ -98,10 +98,6 @@ function colorizeIndexInLine(
         defaultColor(line.slice(index + 1));
 }
 
-function readBunnyTemplate(path: string) {
-    return readFileSync(path, "utf-8").split("\n");
-}
-
 function colorizeBunnyTemplate(
     rawTemplate: string[],
     stats: cowTemplateStats,
@@ -134,6 +130,5 @@ function colorizeBunnyTemplate(
 }
 
 export {
-    colorizeBunnyTemplate,
-    readBunnyTemplate,
+    colorizeBunnyTemplate
 };
