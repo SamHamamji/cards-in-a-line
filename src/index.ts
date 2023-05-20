@@ -1,3 +1,5 @@
+#! /usr/bin/env node
+
 import GameRunner from "./GameRunner";
 
 async function main() {

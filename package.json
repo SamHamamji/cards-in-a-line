@@ -2,12 +2,20 @@
   "name": "cards-in-a-line",
   "version": "1.0.0",
   "description": "A terminal game based on the coins in a line problem, featuring nice graphics and a cute bunny character.",
-  "main": "src/index.ts",
   "scripts": {
     "start": "ts-node src/index.ts",
     "lint": "eslint src/**/*.ts --fix",
-    "build": "esbuild src/index.ts --bundle --platform=node --outfile=dist/index.js"
+    "build": "esbuild src/index.ts --bundle --platform=node --outfile=cial.js",
+    "prepublish": "npm run build"
   },
+  "bin": {
+    "cards-in-a-line": "cial.js"
+  },
+  "files": [
+    "cial.js",
+    "LICENSE",
+    "README.md"
+  ],
   "author": "Sam Hamamji",
   "license": "GPL-3.0",
   "dependencies": {
