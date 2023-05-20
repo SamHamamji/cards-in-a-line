@@ -2,7 +2,8 @@ import path from "path";
 import colors from "colors";
 import { colorizeBunnyTemplate } from "./readBunny";
 import { cowTemplateStats } from "./templateStats";
-import { regularBunny } from "./regularBunny.json";
+
+const regularBunny = "      !\n  !  (\\__/)\n   ! (•ㅅ•)\n     /    づ\n   ━━━━━━━━━━";
 
 const regularBunnyStats: cowTemplateStats = {
     name: "regular bunny",
