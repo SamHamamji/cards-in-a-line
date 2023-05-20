@@ -5,13 +5,15 @@
   "main": "src/index.ts",
   "scripts": {
     "start": "ts-node src/index.ts",
-    "lint": "eslint src/**/*.ts --fix"
+    "lint": "eslint src/**/*.ts --fix",
+    "build": "esbuild src/index.ts --bundle --platform=node --outfile=dist/index.js"
   },
   "author": "Sam Hamamji",
   "license": "GPL-3.0",
   "dependencies": {
     "colors": "^1.4.0",
     "cowsayjs": "^2.0.0",
+    "esbuild": "^0.17.19",
     "inquirer": "^9.1.0"
   },
   "devDependencies": {
